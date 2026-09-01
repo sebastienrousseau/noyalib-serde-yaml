@@ -163,6 +163,16 @@ for rel in ("README.md", f"crates/{name}/README.md"):
     else:
         ok(rel, "install snippets current")
 
+# The pre-release [patch.crates-io] resolution must be gone before a
+# tag: a published crate must resolve its lockstep pin from the
+# registry, not from a git branch that will be deleted.
+manifest = root / "Cargo.toml"
+if manifest.is_file():
+    if re.search(r"^\[patch\.crates-io\]", manifest.read_text(encoding="utf-8"), re.M):
+        bad("Cargo.toml", "[patch.crates-io] still present — remove the pre-release git patch")
+    else:
+        ok("Cargo.toml", "no pre-release [patch] section")
+
 print()
 if failed:
     print("Version mismatch. Fix these before tagging — a tag that fails the")
