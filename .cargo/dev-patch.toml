@@ -1,0 +1,4 @@
+# Local dev only (not committed): core 0.0.29 is unpublished, so
+# resolve the lockstep pin against the sibling checkout.
+[patch.crates-io]
+noyalib = { path = "../noyalib/crates/noyalib" }
