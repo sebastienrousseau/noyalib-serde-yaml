@@ -36,13 +36,3 @@ harness = false
 [lints.rust]
 unsafe_code = "forbid"
 missing_docs = "warn"
-
-# ── Pre-release resolution ─────────────────────────────────────────
-# The `=0.0.29` lockstep pin resolves only against the *published*
-# core. Until that release lands on crates.io, resolve it from the
-# core's release branch so CI and local builds work. Cargo strips
-# `[patch]` from published manifests, and the release validation
-# (scripts/verify-release-versions.sh) refuses to tag while this
-# section is present — REMOVE IT as part of cutting v0.0.29.
-[patch.crates-io]
-noyalib = { git = "https://github.com/sebastienrousseau/noyalib", branch = "feat/v0.0.29" }

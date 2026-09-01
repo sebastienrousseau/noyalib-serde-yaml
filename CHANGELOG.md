@@ -14,6 +14,8 @@ notes.
 
 ## [Unreleased]
 
+## [v0.0.29] - 2026-09-01
+
 ### Added
 
 - **Initial release: the package-rename drop-in.** A re-export of

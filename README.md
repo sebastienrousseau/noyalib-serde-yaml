@@ -138,12 +138,13 @@ how small that gap is on your documents.
 
 ## Developing against an unpublished core
 
-Between lockstep releases the `=0.0.X` pin points at a core version
-crates.io does not have yet. The committed `[patch.crates-io]`
-section resolves it against the core's release branch so CI and
-local builds work; **the patch is removed at release time** (the
-release validation refuses to tag while it is present). To develop
-against your local checkout instead:
+Between lockstep releases the `=0.0.X` pin can point at a core
+version crates.io does not have yet. During that window a
+`[patch.crates-io]` section resolving it against the core's release
+branch is committed so CI and local builds work; **the patch is
+removed at release time** (the release validation refuses to tag
+while it is present). To develop against your local checkout
+instead:
 
 ```bash
 cargo test --config 'patch.crates-io.noyalib.path="../noyalib/crates/noyalib"'
