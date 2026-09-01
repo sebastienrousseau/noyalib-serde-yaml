@@ -35,17 +35,13 @@ jobs:
     uses: sebastienrousseau/noyalib/.github/workflows/shared-test-matrix.yml@05d8856df421bfdec5f96c61f9b76700655fe7b1
 
   # ── A+ rigor parity with the core ──────────────────────────────────
-  coverage-gate:
-    # lsp measures 95.5%/97.3%/95.5% (regions/functions/lines),
-    # clearing the core's 93/96/94 floor — including main.rs (the stdio
-    # loop), so no honest-exclusion regex is needed.
-    uses: sebastienrousseau/noyalib/.github/workflows/shared-coverage.yml@499d114d74b685b7c987c3ea104b5fd00bb5c5f3
-    with:
-      ignore-filename-regex: ''
-      fail-under-functions: 96
-      fail-under-lines: 94
-      fail-under-regions: 93
-
+  # No coverage-gate job: this crate's entire source is one
+  # `pub use noyalib::compat::serde_yaml::*;` — zero coverable
+  # functions, so llvm-cov reports an empty TOTAL and any threshold
+  # arithmetic is vacuous. The behaviour behind the re-export is
+  # held to the core repository's 95/94/93 coverage gate and its
+  # 18-case serde_yaml contract suite; this repo's test-matrix runs
+  # the drop-in integration tests on every platform instead.
   msrv-core:
     # Verifies the declared 1.86.0 floor actually builds.
     uses: sebastienrousseau/noyalib/.github/workflows/shared-msrv-core.yml@499d114d74b685b7c987c3ea104b5fd00bb5c5f3

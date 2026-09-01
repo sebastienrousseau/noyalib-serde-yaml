@@ -66,4 +66,9 @@ highlight = "all"
 unknown-registry = "deny"
 unknown-git = "deny"
 allow-registry = ["https://github.com/rust-lang/crates.io-index"]
-allow-git = []
+# The core repo, pre-release only: the committed [patch.crates-io]
+# resolves the =0.0.X lockstep pin from the core's release branch
+# until it lands on crates.io (see Cargo.toml — the release
+# validation refuses to tag while the patch is present, after which
+# no git source remains in the graph and this entry is inert).
+allow-git = ["https://github.com/sebastienrousseau/noyalib"]
