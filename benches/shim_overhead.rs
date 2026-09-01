@@ -7,7 +7,8 @@
 //! (merge keys must materialise), so the interesting number is how
 //! small that gap is — run `cargo bench` and see.
 
-use criterion::{Criterion, black_box, criterion_group, criterion_main};
+use criterion::{Criterion, criterion_group, criterion_main};
+use std::hint::black_box;
 
 const SMALL: &str = "name: gateway\nport: 8443\ntags:\n  - edge\n  - tls\n";
 
