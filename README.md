@@ -47,6 +47,27 @@ refusal semantics are exact.
   resolution, byte-exact lossless editing (`noyalib::cst`), source
   spans, schema validation, and more — one `use noyalib::…` away.
 
+## Repository layout
+
+| Path | What lives there |
+| --- | --- |
+| `src/lib.rs` | The whole crate: a re-export of `noyalib::compat::serde_yaml` |
+| `tests/drop_in.rs` | Pre-migration `serde_yaml` code, compiled and run verbatim against this crate |
+| `examples/drop_in.rs` | The rename migration end to end — `cargo run --example drop_in` |
+| `examples/behavioural_parity.rs` | The upstream quirks, reproduced — `cargo run --example behavioural_parity` |
+| `benches/shim_overhead.rs` | Shim path vs direct noyalib on the same documents — `cargo bench` |
+| `doc/MIGRATION.md` | The one-line migration, its guarantees, and its edges |
+| `doc/CONTRACT.md` | Where the 18-case behavioural contract comes from and how it is enforced |
+
+## Developing against an unpublished core
+
+The `=0.0.X` lockstep pin resolves against the *published* core, so
+between releases run the suite via a path override:
+
+```sh
+cargo test --config 'patch.crates-io.noyalib.path="../noyalib/crates/noyalib"'
+```
+
 ## Versioning
 
 Releases in strict lockstep with `noyalib` at the identical `=0.0.X`

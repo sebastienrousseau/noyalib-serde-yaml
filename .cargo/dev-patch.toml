@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 Noyalib
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # Local dev only (not committed): core 0.0.29 is unpublished, so
 # resolve the lockstep pin against the sibling checkout.
 [patch.crates-io]

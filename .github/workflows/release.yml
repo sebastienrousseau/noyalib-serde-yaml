@@ -1,0 +1,370 @@
+# SPDX-FileCopyrightText: 2026 Noyalib
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
+name: Release
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+*']
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (skip publish steps)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: '0'
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@f0d9c3887740aee45f6153b24b3a6b815192ec16 # v2
+        with:
+          workspaces: ". -> target-release-validate"
+          key: release-validate
+      - name: Quality checks
+        env:
+          CARGO_TARGET_DIR: ${{ github.workspace }}/target-release-validate
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy --all-targets --all-features -- -D warnings
+          cargo test --all-features --locked
+          cargo doc --no-deps --all-features --locked
+      - name: Verify tag matches Cargo.toml + noyalib pin
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          CARGO_VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          if [ "$TAG_VERSION" != "$CARGO_VERSION" ]; then
+            echo "::error::Tag ($TAG_VERSION) != Cargo.toml ($CARGO_VERSION)"
+            exit 1
+          fi
+          NOYALIB_PIN=$(grep -E '^noyalib\s*=' Cargo.toml | head -1 | sed 's/.*"=\?\([0-9.]*\)".*/\1/')
+          if [ "$NOYALIB_PIN" != "$CARGO_VERSION" ]; then
+            echo "::error::noyalib pin ($NOYALIB_PIN) out of lockstep with noyalib-serde-yaml ($CARGO_VERSION)"
+            exit 1
+          fi
+
+  artifacts:
+    name: Build artifacts
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@f0d9c3887740aee45f6153b24b3a6b815192ec16 # v2
+      # Everything else that carries the version. Added after v0.0.28,
+      # where noyalib-mcp's registry manifests were missed and the
+      # mismatch surfaced only after the tag was pushed. Runnable
+      # locally before tagging: scripts/verify-release-versions.sh
+      - name: Verify every version-bearing file agrees
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: ./scripts/verify-release-versions.sh "${GITHUB_REF_NAME}"
+
+      - name: Package crate
+        run: cargo package --all-features --allow-dirty
+      - name: Generate SBOM
+        run: |
+          set -euo pipefail
+          # Human-readable dependency listing (kept for reviewers) …
+          cargo tree --edges normal --prefix depth --format '{p} {l}' > SBOM.txt
+          # … and the machine-readable SBOM procurement pipelines
+          # ingest — `cargo tree > txt` is not an SBOM format.
+          # Mirrors the core repo's release pipeline; `--all-features`
+          # records the superset dependency graph.
+          cargo install --locked cargo-cyclonedx
+          cargo cyclonedx --format json --all-features --describe crate --spec-version 1.5
+          mv ./*.cdx.json SBOM.cdx.json
+          python3 -c "import json; d=json.load(open('SBOM.cdx.json')); print('CycloneDX', d['specVersion'], '-', d['metadata']['component']['name'], d['metadata']['component']['version'], '-', len(d.get('components', [])), 'components')"
+      - name: Generate checksums
+        run: |
+          set -euo pipefail
+          cd target/package
+          : > SHA256SUMS.txt
+          : > SHA512SUMS.txt
+          for f in *.crate; do
+            sha256sum "$f" >> SHA256SUMS.txt
+            sha512sum "$f" >> SHA512SUMS.txt
+          done
+      - name: Attest build provenance (SLSA L3)
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            target/package/*.crate
+            SBOM.txt
+            SBOM.cdx.json
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: Sign release artefacts (keyless)
+        env:
+          COSIGN_YES: "true"
+        run: |
+          set -euo pipefail
+          cd target/package
+          for f in *.crate; do
+            cosign sign-blob --bundle "${f}.bundle" "$f"
+          done
+          cd -
+          cosign sign-blob --bundle "SBOM.txt.bundle" SBOM.txt
+          cosign sign-blob --bundle "SBOM.cdx.json.bundle" SBOM.cdx.json
+      # ── Optional detached GPG signatures ──────────────────────────
+      # Additive to the sigstore bundles above, not a replacement.
+      # Keyless signing is the stronger primitive — no long-lived key to
+      # guard, and every signature is publicly logged in Rekor — but it
+      # requires cosign and network access to verify. A detached `.asc`
+      # can be checked with the gpg any distro already ships, offline,
+      # which is what package maintainers and air-gapped consumers ask
+      # for.
+      #
+      # Deliberately a STEP in this job rather than a separate job. The
+      # `.asc` files are produced before the same `upload-artifact` that
+      # carries the crate and the bundles, so they cannot lose a race
+      # with the release job. static-site-generator learned this the
+      # hard way: its signing job ran concurrently with publishing, so
+      # the signatures were generated, stored, and dropped before the
+      # release was assembled (sebastienrousseau/static-site-generator#678).
+      #
+      # Absent secret = skip, not fail. Every release before this one
+      # shipped without GPG, and a fork without the key must still be
+      # able to cut a release.
+      - name: GPG sign release artefacts (optional)
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GPG_PRIVATE_KEY:-}" ]; then
+            echo "GPG_PRIVATE_KEY not set — skipping detached signatures."
+            echo "The sigstore bundles above are unaffected."
+            exit 0
+          fi
+
+          # Import into a throwaway keyring inside the runner workspace
+          # so nothing persists and GNUPGHOME never points at a shared
+          # location.
+          # Declared separately from the assignment so a mktemp failure
+          # is not masked by export's own exit status (SC2155).
+          GNUPGHOME="$(mktemp -d)"
+          export GNUPGHOME
+          chmod 700 "$GNUPGHOME"
+          printf '%s' "$GPG_PRIVATE_KEY" | gpg --batch --quiet --import
+          KEY_ID="$(gpg --list-secret-keys --with-colons | awk -F: '/^fpr:/ {print $10; exit}')"
+          echo "signing with ${KEY_ID}"
+
+          # Trust the key ultimately *in this throwaway keyring*. A fresh
+          # GNUPGHOME has no ownertrust database, so `gpg --verify` would
+          # otherwise report a perfectly good signature as
+          # "not certified with a trusted signature". That warning is not
+          # cosmetic here: without it the verification below cannot
+          # distinguish our key from any other key that happens to
+          # produce a valid signature.
+          printf '%s:6:\n' "$KEY_ID" | gpg --batch --quiet --import-ownertrust
+
+          sign() {
+            gpg --batch --yes --quiet \
+                --pinentry-mode loopback \
+                --passphrase "${GPG_PASSPHRASE:-}" \
+                --local-user "$KEY_ID" \
+                --armor --detach-sign "$1"
+
+            # Verify what we just wrote, and assert three things rather
+            # than trusting the exit status. `gpg --verify` returns 0 for
+            # a valid signature from an *untrusted* key, so the exit code
+            # alone does not say what a reader assumes it says.
+            #
+            #   GOODSIG    the signature is cryptographically valid
+            #   VALIDSIG   it was made by THIS key, not merely some key
+            #   TRUST_*    the key is certified, not dangling
+            local status
+            status="$(mktemp)"
+            gpg --batch --status-fd=1 --verify "$1.asc" "$1" >"$status" 2>/dev/null
+            grep -q '^\[GNUPG:\] GOODSIG'                  "$status" || { echo "::error::$1: signature is not GOODSIG";  sed 's/^/    /' "$status"; exit 1; }
+            grep -q "^\[GNUPG:\] VALIDSIG ${KEY_ID}"       "$status" || { echo "::error::$1: not signed by ${KEY_ID}";   sed 's/^/    /' "$status"; exit 1; }
+            grep -qE '^\[GNUPG:\] TRUST_(ULTIMATE|FULLY)'  "$status" || { echo "::error::$1: key is not trusted";        sed 's/^/    /' "$status"; exit 1; }
+            rm -f "$status"
+            echo "  signed + verified (GOODSIG, VALIDSIG ${KEY_ID}, trusted) $1"
+          }
+
+          for f in target/package/*.crate; do sign "$f"; done
+          sign SBOM.txt
+          sign SBOM.cdx.json
+
+          gpgconf --kill all || true
+          rm -rf "$GNUPGHOME"
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-artifacts
+          path: |
+            target/package/*.crate
+            target/package/*.bundle
+            target/package/SHA256SUMS.txt
+            target/package/SHA512SUMS.txt
+            SBOM.txt
+            SBOM.txt.bundle
+            SBOM.cdx.json
+            SBOM.cdx.json.bundle
+            target/package/*.asc
+            SBOM.txt.asc
+            SBOM.cdx.json.asc
+          retention-days: 5
+
+  cross-verify:
+    name: Verify (${{ matrix.os }})
+    needs: validate
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    env:
+      CARGO_TARGET_DIR: ${{ github.workspace }}/target-release-verify-${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@f0d9c3887740aee45f6153b24b3a6b815192ec16 # v2
+        with:
+          workspaces: ". -> target-release-verify-${{ matrix.os }}"
+          key: release-verify-${{ matrix.os }}
+      - run: cargo test --all-features --locked
+
+  github-release:
+    name: GitHub Release
+    needs: [artifacts, cross-verify]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Download artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-artifacts
+          path: artifacts
+      - name: Generate release notes
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          PREV_TAG=$(git tag --sort=-version:refname | grep -v "$TAG" | head -1 || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            RANGE="${PREV_TAG}..${TAG}"
+          else
+            RANGE="${TAG}"
+          fi
+          echo "## What's Changed" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          git log "$RANGE" --pretty=format:"- %s (%h)" --no-merges >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "## Checksums" >> RELEASE_NOTES.md
+          echo '```' >> RELEASE_NOTES.md
+          cat artifacts/target/package/SHA256SUMS.txt >> RELEASE_NOTES.md
+          echo '```' >> RELEASE_NOTES.md
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Idempotent: drop an existing release (keep the tag) so a
+          # re-tag re-run does not fail on "release already exists".
+          gh release delete "$GITHUB_REF_NAME" --yes 2>/dev/null || true
+          # Built as an array under `nullglob` so the .asc entries simply
+          # vanish when GPG signing was skipped, instead of reaching gh as
+          # unmatched literal globs and failing the release.
+          #
+          # The .asc files were produced, uploaded to the workflow artifact,
+          # and then dropped here: this list is explicit and did not name
+          # them. Same outcome as
+          # sebastienrousseau/static-site-generator#678, reached from the
+          # opposite direction — there a glob raced the signing job, here an
+          # explicit list omitted its output.
+          shopt -s nullglob
+          assets=(
+            artifacts/target/package/*.crate
+            artifacts/target/package/*.bundle
+            artifacts/target/package/*.asc
+            artifacts/target/package/SHA256SUMS.txt
+            artifacts/target/package/SHA512SUMS.txt
+            artifacts/SBOM.txt
+            artifacts/SBOM.txt.bundle
+            # The `[c]` character class makes these actual globs:
+            # `nullglob` only removes unmatched *patterns*, so the
+            # previous literal spelling stayed in the array when GPG
+            # signing was skipped and failed `gh release create` on a
+            # missing file. Mirrors the core repo's fix.
+            artifacts/SBOM.txt.as[c]
+            artifacts/SBOM.cdx.json
+            artifacts/SBOM.cdx.json.bundle
+            artifacts/SBOM.cdx.json.as[c]
+          )
+          shopt -u nullglob
+          printf 'attaching %s\n' "${assets[@]}"
+          gh release create "$GITHUB_REF_NAME" \
+            --title "noyalib-serde-yaml $GITHUB_REF_NAME" \
+            --notes-file RELEASE_NOTES.md \
+            "${assets[@]}"
+
+  crates-io:
+    name: Publish to crates.io
+    needs: [github-release]
+    if: startsWith(github.ref, 'refs/tags/v') && github.event.inputs.dry_run != 'true'
+    runs-on: ubuntu-latest
+    environment: crates-io
+    permissions:
+      contents: read
+      # Mints the OIDC identity token crates.io exchanges for a
+      # short-lived publish token. Without it the auth step fails.
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+      # Trusted publishing: swaps this job's GitHub OIDC identity for a
+      # temporary crates.io token, revoked by the action's post step when
+      # the job ends. Needs a trusted publisher registered on crates.io
+      # for this crate (repo + release.yml + environment crates-io).
+      - name: Authenticate with crates.io
+        id: auth
+        uses: rust-lang/crates-io-auth-action@c6f97d42243bad5fab37ca0427f495c86d5b1a18 # v1.0.5
+
+      - name: Publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+        run: |
+          set -uxo pipefail
+          out=$(cargo publish --all-features --locked 2>&1) && rc=0 || rc=$?
+          echo "$out"
+          if [ "$rc" -ne 0 ]; then
+            echo "$out" | grep -qE "already (exists|uploaded)" \
+              && { echo "version already on crates.io — tolerating"; exit 0; }
+            exit "$rc"
+          fi

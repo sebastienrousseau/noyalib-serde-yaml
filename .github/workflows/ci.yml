@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: 2026 Noyalib
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cargo-deny:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-deny.yml@05d8856df421bfdec5f96c61f9b76700655fe7b1
+  cargo-vet:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-vet.yml@05d8856df421bfdec5f96c61f9b76700655fe7b1
+  cargo-machete:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-cargo-machete.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+  reuse-lint:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-reuse.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+  docs-strict:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-rustdoc-strict.yml@499d114d74b685b7c987c3ea104b5fd00bb5c5f3
+  verify-signatures:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-verify-signatures.yml@bbf0b9ca4930398a4984c78deccb91002c15d13b
+  test-matrix:
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-test-matrix.yml@05d8856df421bfdec5f96c61f9b76700655fe7b1
+
+  # ── A+ rigor parity with the core ──────────────────────────────────
+  coverage-gate:
+    # lsp measures 95.5%/97.3%/95.5% (regions/functions/lines),
+    # clearing the core's 93/96/94 floor — including main.rs (the stdio
+    # loop), so no honest-exclusion regex is needed.
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-coverage.yml@499d114d74b685b7c987c3ea104b5fd00bb5c5f3
+    with:
+      ignore-filename-regex: ''
+      fail-under-functions: 96
+      fail-under-lines: 94
+      fail-under-regions: 93
+
+  msrv-core:
+    # Verifies the declared 1.86.0 floor actually builds.
+    uses: sebastienrousseau/noyalib/.github/workflows/shared-msrv-core.yml@499d114d74b685b7c987c3ea104b5fd00bb5c5f3
+    with:
+      toolchain: "1.86.0"
