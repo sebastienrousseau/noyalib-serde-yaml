@@ -163,6 +163,13 @@ cargo test --config 'patch.crates-io.noyalib.path="../noyalib/crates/noyalib"'
 
 ## Documentation
 
+The four entry points, identical across every repo in the family:
+
+- **[User Manual](https://sebastienrousseau.github.io/noyalib/manual/)** — the rendered book: user guide, migrations, architecture, policies, ADRs
+- **[API reference](https://docs.rs/noyalib-serde-yaml)** — rustdoc on docs.rs
+- **[Developer docs](DEVELOPMENT.md)** — this repo's dev entry point, pointing at the family guide
+- **[Ecosystem map](https://github.com/sebastienrousseau/noyalib/blob/main/docs/ECOSYSTEM.md)** — the six crates, the lockstep model, the scorecard
+
 - **Migration guide** — [`docs/MIGRATION.md`](docs/MIGRATION.md), and the
   workspace-level
   [`MIGRATION-FROM-SERDE-YAML.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/MIGRATION-FROM-SERDE-YAML.md)
