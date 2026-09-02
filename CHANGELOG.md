@@ -14,6 +14,15 @@ notes.
 
 ## [Unreleased]
 
+## [v0.0.30] - 2026-09-02
+
+### Changed
+
+- Lockstep release with noyalib 0.0.30 (exact serde_yaml location
+  parity: tagged/anchored node spans anchor at their properties;
+  the `custom-explicit-tag` contract case now pins `1:8:7`). No
+  satellite-local changes.
+
 ## [v0.0.29] - 2026-09-01
 
 ### Added
