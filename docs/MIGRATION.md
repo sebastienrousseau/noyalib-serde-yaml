@@ -45,5 +45,5 @@ lossless editing (`noyalib::cst`), source spans, streaming
 deserialisation, and schema validation. Depend on `noyalib` directly
 (optionally with `features = ["compat-serde-yaml"]` to keep the shim
 during a gradual migration), and see the core's
-[`doc/MIGRATION-FROM-SERDE-YAML.md`](https://github.com/sebastienrousseau/noyalib/blob/main/doc/MIGRATION-FROM-SERDE-YAML.md)
+[`docs/MIGRATION-FROM-SERDE-YAML.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/MIGRATION-FROM-SERDE-YAML.md)
 for the full function-by-function mapping.
