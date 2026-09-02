@@ -171,12 +171,12 @@ The four entry points, identical across every repo in the family:
 - **[Ecosystem map](https://github.com/sebastienrousseau/noyalib/blob/main/docs/ECOSYSTEM.md)** — the six crates, the lockstep model, the scorecard
 
 - **Migration guide** — [`docs/MIGRATION.md`](docs/MIGRATION.md), and the
-  workspace-level
+  core repository's
   [`MIGRATION-FROM-SERDE-YAML.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/MIGRATION-FROM-SERDE-YAML.md)
   for the function-by-function mapping.
 - **Behavioural contract** — [`docs/CONTRACT.md`](docs/CONTRACT.md).
 - **API reference** — [docs.rs/noyalib-serde-yaml](https://docs.rs/noyalib-serde-yaml).
-- **Engineering policies** — the workspace
+- **Engineering policies** — the core repository's
   [`POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/POLICIES.md).
 
 ## License
