@@ -106,7 +106,7 @@ the opposite contract on both counts:
 One documented partial: a custom tag refused under `deserialize_any`
 anchors its location at the value where upstream anchors at the tag —
 message and refusal semantics are exact. Full provenance and
-enforcement: [`doc/CONTRACT.md`](doc/CONTRACT.md).
+enforcement: [`docs/CONTRACT.md`](docs/CONTRACT.md).
 
 ## Examples
 
@@ -133,8 +133,8 @@ how small that gap is on your documents.
 | `tests/drop_in.rs` | Pre-migration `serde_yaml` code, compiled and run verbatim |
 | `examples/` | The migration and the parity quirks, runnable |
 | `benches/shim_overhead.rs` | Shim path vs direct noyalib |
-| `doc/MIGRATION.md` | The one-line migration, its guarantees, and its edges |
-| `doc/CONTRACT.md` | Where the 18-case behavioural contract comes from |
+| `docs/MIGRATION.md` | The one-line migration, its guarantees, and its edges |
+| `docs/CONTRACT.md` | Where the 18-case behavioural contract comes from |
 
 ## Developing against an unpublished core
 
@@ -159,18 +159,25 @@ cargo test --config 'patch.crates-io.noyalib.path="../noyalib/crates/noyalib"'
   reproduce.
 - **You want the quirks gone.** The same engine minus the profile is
   one `use noyalib::…` away; migrate gradually with the core's
-  [`compat-serde-yaml` feature](https://github.com/sebastienrousseau/noyalib/blob/main/doc/MIGRATION-FROM-SERDE-YAML.md).
+  [`compat-serde-yaml` feature](https://github.com/sebastienrousseau/noyalib/blob/main/docs/MIGRATION-FROM-SERDE-YAML.md).
 
 ## Documentation
 
-- **Migration guide** — [`doc/MIGRATION.md`](doc/MIGRATION.md), and the
-  workspace-level
-  [`MIGRATION-FROM-SERDE-YAML.md`](https://github.com/sebastienrousseau/noyalib/blob/main/doc/MIGRATION-FROM-SERDE-YAML.md)
+The four entry points, identical across every repo in the family:
+
+- **[User Manual](https://sebastienrousseau.github.io/noyalib/manual/)** — the rendered book: user guide, migrations, architecture, policies, ADRs
+- **[API reference](https://docs.rs/noyalib-serde-yaml)** — rustdoc on docs.rs
+- **[Developer docs](DEVELOPMENT.md)** — this repo's dev entry point, pointing at the family guide
+- **[Ecosystem map](https://github.com/sebastienrousseau/noyalib/blob/main/docs/ECOSYSTEM.md)** — the six crates, the lockstep model, the scorecard
+
+- **Migration guide** — [`docs/MIGRATION.md`](docs/MIGRATION.md), and the
+  core repository's
+  [`MIGRATION-FROM-SERDE-YAML.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/MIGRATION-FROM-SERDE-YAML.md)
   for the function-by-function mapping.
-- **Behavioural contract** — [`doc/CONTRACT.md`](doc/CONTRACT.md).
+- **Behavioural contract** — [`docs/CONTRACT.md`](docs/CONTRACT.md).
 - **API reference** — [docs.rs/noyalib-serde-yaml](https://docs.rs/noyalib-serde-yaml).
-- **Engineering policies** — the workspace
-  [`POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/doc/POLICIES.md).
+- **Engineering policies** — the core repository's
+  [`POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/POLICIES.md).
 
 ## License
 
