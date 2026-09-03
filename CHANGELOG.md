@@ -14,6 +14,13 @@ notes.
 
 ## [Unreleased]
 
+## [v0.0.32] - 2026-09-03
+
+### Changed
+
+- Lockstep release with noyalib 0.0.32: block sequence spans report
+  their full extent (core #375). No local behaviour change.
+
 ## [v0.0.31] - 2026-09-03
 
 ### Changed
