@@ -42,7 +42,7 @@
 
 ```toml
 # Cargo.toml — the whole migration:
-serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.30" }
+serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.31" }
 ```
 
 Every `use serde_yaml::…` in your codebase keeps compiling — Cargo's
