@@ -7,7 +7,7 @@
 //!
 //! ```toml
 //! # Cargo.toml — the whole migration:
-//! serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.29" }
+//! serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.33" }
 //! ```
 //!
 //! Every `use serde_yaml::…` in the codebase keeps compiling
@@ -57,5 +57,6 @@
 //! ```
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 pub use noyalib::compat::serde_yaml::*;
