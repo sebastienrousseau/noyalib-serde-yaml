@@ -25,6 +25,7 @@
 ## Contents
 
 - [Install](#install) — the one-line migration
+- [Requirements](#requirements) — toolchain floor, platforms, the core pin
 - [Quick Start](#quick-start) — pre-migration code, unchanged
 - [Why this approach?](#why-this-approach) — design rationale
 - [Behavioural parity](#behavioural-parity) — what "drop-in" guarantees
@@ -52,6 +53,19 @@ diff is one manifest line.
 **MSRV: Rust 1.86.0** — matching the noyalib core floor. Releases
 ship in strict lockstep with the core at the identical `=0.0.X`
 (ADR-0005); the exact pin is the compatibility contract.
+
+## Requirements
+
+- **Rust 1.86.0 or newer** to build from source: `rust-version` in
+  the manifest, enforced by the `msrv-core` CI job on every push.
+- **Any tier-1 platform.** CI runs the tests on Linux, macOS, and
+  Windows with the stable, beta, and nightly toolchains; stable is the
+  gate, beta and nightly are early warning.
+- **The matching core.** This crate pins `noyalib` at the identical
+  `=0.0.X` and releases in lockstep with it; Cargo resolves that pin
+  for you.
+- **`serde` 1**, as with `serde_yaml`; nothing else changes in your
+  manifest beyond the package rename.
 
 ## Quick Start
 
