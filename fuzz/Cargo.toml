@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: 2026 Noyalib
+# SPDX-License-Identifier: MIT OR Apache-2.0
+[package]
+name = "noyalib-serde-yaml-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+# The shim, exactly as a renamed dependency sees it.
+[dependencies.serde_yaml]
+package = "noyalib-serde-yaml"
+path = ".."
+
+[[bin]]
+name = "fuzz_from_str"
+path = "fuzz_targets/fuzz_from_str.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_roundtrip"
+path = "fuzz_targets/fuzz_roundtrip.rs"
+test = false
+doc = false
+bench = false
+
+# Pre-release: the parent manifest's git patch, until the cut removes
+# both (scripts/verify-release-versions.sh checks this file too).
+[patch.crates-io]
+noyalib = { git = "https://github.com/sebastienrousseau/noyalib", branch = "feat/v0.0.33" }
