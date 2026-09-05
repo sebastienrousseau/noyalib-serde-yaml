@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2026 Noyalib
+# SPDX-License-Identifier: MIT OR Apache-2.0
+[book]
+title = "The noyalib-serde-yaml Manual"
+description = "The drop-in serde_yaml replacement: rename the package, change zero source lines."
+authors = ["Sebastien Rousseau"]
+language = "en"
+src = "."
+
+[build]
+build-dir = "../target-book"
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/sebastienrousseau/noyalib-serde-yaml"
+edit-url-template = "https://github.com/sebastienrousseau/noyalib-serde-yaml/edit/main/docs/{path}"
+site-url = "/noyalib-serde-yaml/manual/"

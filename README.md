@@ -25,6 +25,7 @@
 ## Contents
 
 - [Install](#install) — the one-line migration
+- [Requirements](#requirements) — toolchain floor, platforms, the core pin
 - [Quick Start](#quick-start) — pre-migration code, unchanged
 - [Why this approach?](#why-this-approach) — design rationale
 - [Behavioural parity](#behavioural-parity) — what "drop-in" guarantees
@@ -42,7 +43,7 @@
 
 ```toml
 # Cargo.toml — the whole migration:
-serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.31" }
+serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.33" }
 ```
 
 Every `use serde_yaml::…` in your codebase keeps compiling — Cargo's
@@ -52,6 +53,19 @@ diff is one manifest line.
 **MSRV: Rust 1.86.0** — matching the noyalib core floor. Releases
 ship in strict lockstep with the core at the identical `=0.0.X`
 (ADR-0005); the exact pin is the compatibility contract.
+
+## Requirements
+
+- **Rust 1.86.0 or newer** to build from source: `rust-version` in
+  the manifest, enforced by the `msrv-core` CI job on every push.
+- **Any tier-1 platform.** CI runs the tests on Linux, macOS, and
+  Windows with the stable, beta, and nightly toolchains; stable is the
+  gate, beta and nightly are early warning.
+- **The matching core.** This crate pins `noyalib` at the identical
+  `=0.0.X` and releases in lockstep with it; Cargo resolves that pin
+  for you.
+- **`serde` 1**, as with `serde_yaml`; nothing else changes in your
+  manifest beyond the package rename.
 
 ## Quick Start
 
@@ -165,7 +179,7 @@ cargo test --config 'patch.crates-io.noyalib.path="../noyalib/crates/noyalib"'
 
 The four entry points, identical across every repo in the family:
 
-- **[User Manual](https://sebastienrousseau.github.io/noyalib/manual/)** — the rendered book: user guide, migrations, architecture, policies, ADRs
+- **[User Manual](https://sebastienrousseau.github.io/noyalib-serde-yaml/manual/)** — this crate's rendered book: its guides, architecture, and release notes; the family manual for the core library is at [https://sebastienrousseau.github.io/noyalib/manual/](https://sebastienrousseau.github.io/noyalib/manual/)
 - **[API reference](https://docs.rs/noyalib-serde-yaml)** — rustdoc on docs.rs
 - **[Developer docs](DEVELOPMENT.md)** — this repo's dev entry point, pointing at the family guide
 - **[Ecosystem map](https://github.com/sebastienrousseau/noyalib/blob/main/docs/ECOSYSTEM.md)** — the six crates, the lockstep model, the scorecard

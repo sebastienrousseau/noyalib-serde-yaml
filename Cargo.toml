@@ -3,7 +3,7 @@
 
 [package]
 name = "noyalib-serde-yaml"
-version = "0.0.32"
+version = "0.0.33"
 edition = "2024"
 rust-version = "1.86.0"
 license = "MIT OR Apache-2.0"
@@ -19,7 +19,7 @@ authors = ["Sebastien Rousseau <sebastian.rousseau@gmail.com>"]
 [dependencies]
 # Strict lockstep with the core, per ADR-0005: this crate releases at
 # the same `=0.0.X` as noyalib and pins it exactly.
-noyalib = { version = "=0.0.32", default-features = false, features = [
+noyalib = { version = "=0.0.33", default-features = false, features = [
     "std",
     "compat-serde-yaml",
 ] }
