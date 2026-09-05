@@ -5,7 +5,7 @@
 
 ```toml
 # Cargo.toml — the whole migration:
-serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.29" }
+serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.33" }
 ```
 
 Every `use serde_yaml::…` in your codebase keeps compiling and
