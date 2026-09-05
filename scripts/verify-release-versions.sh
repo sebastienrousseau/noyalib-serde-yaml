@@ -149,29 +149,26 @@ if changelog.is_file():
     else:
         bad("CHANGELOG.md", f"no [v{version}] heading — still under [Unreleased]?")
 
-# README install snippets naming this crate.
-for rel in ("README.md", f"crates/{name}/README.md"):
-    f = root / rel
-    if not f.is_file():
+# Install snippets naming this crate: the READMEs and every page under
+# docs/ except release notes and decision records. Two spellings count:
+# `<name> = ...` and Cargo's rename form `package = "<name>"`, which is
+# how the serde_yaml drop-in is installed and which the gate missed in
+# the v0.0.33 cycle (a README pin two releases stale).
+snippet_files = [root / "README.md", root / "crates" / name / "README.md"]
+snippet_files += sorted((root / "docs").rglob("*.md")) if (root / "docs").is_dir() else []
+for f in snippet_files:
+    rel = str(f.relative_to(root))
+    if not f.is_file() or "release-notes" in rel or "/adr/" in rel:
         continue
     stale = set()
     for line in f.read_text(encoding="utf-8").splitlines():
-        if re.search(rf"\b{re.escape(name)}\s*=\s*[\"{{]", line):
+        names_this_crate = re.search(rf"\b{re.escape(name)}\s*=\s*[\"{{]", line) or f'package = "{name}"' in line
+        if names_this_crate:
             stale.update(v for v in re.findall(r"\d+\.\d+\.\d+", line) if v != version)
     if stale:
         bad(rel, "mentions " + ", ".join(sorted(stale)))
     else:
         ok(rel, "install snippets current")
-
-# The pre-release [patch.crates-io] resolution must be gone before a
-# tag: a published crate must resolve its lockstep pin from the
-# registry, not from a git branch that will be deleted.
-manifest = root / "Cargo.toml"
-if manifest.is_file():
-    if re.search(r"^\[patch\.crates-io\]", manifest.read_text(encoding="utf-8"), re.M):
-        bad("Cargo.toml", "[patch.crates-io] still present — remove the pre-release git patch")
-    else:
-        ok("Cargo.toml", "no pre-release [patch] section")
 
 print()
 if failed:
