@@ -16,6 +16,12 @@ notes.
 
 ## [v0.0.38] - 2026-09-06
 
+### Added
+
+- **The ultra-complex fixture through `from_str` and `apply_merge`**
+  (`tests/fixtures/ultra-complex/`) projects onto exactly its expected
+  JSON. The README names and links the official yaml-test-suite.
+
 ### Changed
 
 - Lockstep release with noyalib 0.0.38: the Scorecard pinned-dependency
