@@ -14,6 +14,15 @@ notes.
 
 ## [Unreleased]
 
+## [v0.0.35] - 2026-09-06
+
+### Changed
+
+- Lockstep release with noyalib 0.0.35: the 10/10 programme (formal
+  budget proofs, a wasip2 build, scorecard hardening, the cookbook) and
+  the family gaps closed in this cycle. No local code change unless
+  listed below.
+
 ## [v0.0.34] - 2026-09-05
 
 ### Changed
