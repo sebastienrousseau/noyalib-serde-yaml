@@ -43,7 +43,7 @@
 
 ```toml
 # Cargo.toml — the whole migration:
-serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.37" }
+serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.38" }
 ```
 
 Every `use serde_yaml::…` in your codebase keeps compiling — Cargo's
@@ -192,6 +192,17 @@ The four entry points, identical across every repo in the family:
 - **API reference** — [docs.rs/noyalib-serde-yaml](https://docs.rs/noyalib-serde-yaml).
 - **Engineering policies** — the core repository's
   [`POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/POLICIES.md).
+
+## Conformance
+
+Every push runs the official [yaml-test-suite](https://github.com/yaml/yaml-test-suite)
+through this shim's `from_str`, from the same vendored suite and the same core
+commit as the `noyalib` core: 367 of 367 cases inside the `serde_yaml`
+contract (24 multi-document cases and 15 non-scalar-key cases are refused the
+way the original refused them). A configuration that uses most of YAML at
+once (`tests/fixtures/ultra-complex/`) parses to exactly its expected JSON.
+Details and the family table:
+[noyalib.com/conformance](https://noyalib.com/conformance/).
 
 ## License
 
