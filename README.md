@@ -17,7 +17,8 @@
   <a href="https://crates.io/crates/noyalib-serde-yaml"><img src="https://img.shields.io/crates/v/noyalib-serde-yaml.svg?style=for-the-badge&color=fc8d62&logo=rust" alt="Crates.io" /></a>
   <a href="https://docs.rs/noyalib-serde-yaml"><img src="https://img.shields.io/badge/docs.rs-noyalib--serde--yaml-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" alt="Docs.rs" /></a>
   <a href="https://lib.rs/crates/noyalib-serde-yaml"><img src="https://img.shields.io/badge/lib.rs-noyalib-orange.svg?style=for-the-badge" alt="lib.rs" /></a>
-  <a href="https://scorecard.dev/viewer/?uri=github.com/sebastienrousseau/noyalib"><img src="https://img.shields.io/ossf-scorecard/github.com/sebastienrousseau/noyalib?style=for-the-badge&label=OpenSSF%20Scorecard&logo=openssf" alt="OpenSSF Scorecard" /></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/sebastienrousseau/noyalib-serde-yaml"><img src="https://img.shields.io/ossf-scorecard/github.com/sebastienrousseau/noyalib-serde-yaml?style=for-the-badge&label=OpenSSF%20Scorecard&logo=openssf" alt="OpenSSF Scorecard" /></a>
+  <a href="https://www.bestpractices.dev/projects/14497"><img src="https://img.shields.io/cii/level/14497?style=for-the-badge&label=OpenSSF%20Best%20Practices&logo=openssf" alt="OpenSSF Best Practices" /></a>
 </p>
 
 ---
@@ -43,7 +44,7 @@
 
 ```toml
 # Cargo.toml — the whole migration:
-serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.39" }
+serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.40" }
 ```
 
 Every `use serde_yaml::…` in your codebase keeps compiling — Cargo's
