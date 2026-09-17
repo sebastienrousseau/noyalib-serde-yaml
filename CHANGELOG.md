@@ -12,7 +12,18 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
-## [Unreleased]
+## [v0.0.44] - 2026-09-17
+
+### Changed
+
+- Tracks `noyalib` 0.0.44, which fixes a serializer defect that moved a
+  struct's fields up a level when it was wrapped in `SpaceAfter` or
+  `Commented` — the output stayed valid YAML while meaning something
+  else. The façade re-exports noyalib's serializer, so the fix reaches
+  this crate through the version pin; no source change here.
+
+  See the core crate's `CHANGELOG.md` for the full release notes.
+
 
 ## [v0.0.43] - 2026-09-08
 
