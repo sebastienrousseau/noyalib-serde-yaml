@@ -12,6 +12,17 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
+## [v0.0.45] - 2026-09-18
+
+### Changed
+
+- Tracks `noyalib` 0.0.45. The core release fixes `Spanned<T>` dropping
+  the parser toggles it was given and the borrowed graph ignoring an
+  explicit `!!str` tag — both on the deserialisation path this shim
+  re-exports. The fixes arrive via the version pin; no source change.
+
+  See the core crate's `CHANGELOG.md` for the full release notes.
+
 ## [v0.0.44] - 2026-09-17
 
 ### Changed
