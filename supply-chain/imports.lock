@@ -65,6 +65,10 @@ audited_as = "0.0.43"
 version = "0.0.45"
 audited_as = "0.0.44"
 
+[[unpublished.noyalib-serde-yaml]]
+version = "0.0.46"
+audited_as = "0.0.45"
+
 [[publisher.bumpalo]]
 version = "3.20.3"
 when = "2026-05-22"
@@ -275,12 +279,6 @@ delta = "0.7.1 -> 0.7.2"
 notes = "No `.rs` changes in the delta."
 aggregated-from = "https://chromium.googlesource.com/chromium/src/+/main/third_party/rust/chromium_crates_io/supply-chain/audits.toml?format=TEXT"
 
-[[audits.google.audits.crossbeam-deque]]
-who = "George Burgess IV <gbiv@google.com>"
-criteria = "safe-to-run"
-version = "0.8.3"
-aggregated-from = "https://chromium.googlesource.com/chromiumos/third_party/rust_crates/+/refs/heads/main/cargo-vet/audits.toml?format=TEXT"
-
 [[audits.google.audits.crossbeam-epoch]]
 who = "George Burgess IV <gbiv@google.com>"
 criteria = "safe-to-run"
@@ -291,18 +289,6 @@ aggregated-from = "https://chromium.googlesource.com/chromiumos/third_party/rust
 who = "George Burgess IV <gbiv@google.com>"
 criteria = "safe-to-run"
 delta = "0.9.14 -> 0.9.15"
-aggregated-from = "https://chromium.googlesource.com/chromiumos/third_party/rust_crates/+/refs/heads/main/cargo-vet/audits.toml?format=TEXT"
-
-[[audits.google.audits.crossbeam-utils]]
-who = "George Burgess IV <gbiv@google.com>"
-criteria = "safe-to-run"
-version = "0.8.15"
-aggregated-from = "https://chromium.googlesource.com/chromiumos/third_party/rust_crates/+/refs/heads/main/cargo-vet/audits.toml?format=TEXT"
-
-[[audits.google.audits.crossbeam-utils]]
-who = "George Burgess IV <gbiv@google.com>"
-criteria = "safe-to-run"
-delta = "0.8.15 -> 0.8.16"
 aggregated-from = "https://chromium.googlesource.com/chromiumos/third_party/rust_crates/+/refs/heads/main/cargo-vet/audits.toml?format=TEXT"
 
 [[audits.google.audits.equivalent]]
@@ -1346,43 +1332,6 @@ who = "Jack Grigg <jack@electriccoin.co>"
 criteria = "safe-to-deploy"
 delta = "0.7.4 -> 0.7.6"
 aggregated-from = "https://raw.githubusercontent.com/zcash/wallet/main/supply-chain/audits.toml"
-
-[[audits.zcash.audits.crossbeam-deque]]
-who = "Jack Grigg <jack@electriccoin.co>"
-criteria = "safe-to-deploy"
-delta = "0.8.3 -> 0.8.4"
-aggregated-from = "https://raw.githubusercontent.com/zcash/zcash/master/qa/supply-chain/audits.toml"
-
-[[audits.zcash.audits.crossbeam-deque]]
-who = "Daira-Emma Hopwood <daira@jacaranda.org>"
-criteria = "safe-to-deploy"
-delta = "0.8.4 -> 0.8.5"
-notes = "Changes to `unsafe` code look okay."
-aggregated-from = "https://raw.githubusercontent.com/zcash/zcash/master/qa/supply-chain/audits.toml"
-
-[[audits.zcash.audits.crossbeam-utils]]
-who = "Jack Grigg <jack@electriccoin.co>"
-criteria = "safe-to-deploy"
-delta = "0.8.16 -> 0.8.17"
-notes = """
-- Build script change removes some now-unused config flags, and checks for thread
-  sanitization to enable this on `crossbeam`.
-- Changes to `unsafe` blocks are to move them, or to introduce a couple of new
-  blocks identical to equivalent earlier blocks (now that MSRV is new enough to
-  access newer `Atomic*` methods).
-"""
-aggregated-from = "https://raw.githubusercontent.com/zcash/zcash/master/qa/supply-chain/audits.toml"
-
-[[audits.zcash.audits.crossbeam-utils]]
-who = "Jack Grigg <jack@electriccoin.co>"
-criteria = "safe-to-deploy"
-delta = "0.8.17 -> 0.8.18"
-notes = """
-Changes to `unsafe` code are to construct and drop `MaybeUninit<T>` directly
-via its methods (one of which is now usable with the new MSRV) instead of via
-casting.
-"""
-aggregated-from = "https://raw.githubusercontent.com/zcash/zcash/master/qa/supply-chain/audits.toml"
 
 [[audits.zcash.audits.crunchy]]
 who = "Jack Grigg <jack@electriccoin.co>"

@@ -1,211 +1,215 @@
 <!-- SPDX-License-Identifier: Apache-2.0 OR MIT -->
 
 <p align="center">
-  <img src="https://cloudcdn.pro/noyalib/v1/logos/noyalib.svg" alt="Noyalib logo" width="128" />
+  <img src="https://cloudcdn.pro/noyalib/v1/logos/noyalib.svg" alt="noyalib-serde-yaml logo" width="128" />
 </p>
 
 <h1 align="center">noyalib-serde-yaml</h1>
 
 <p align="center">
-  <strong>Drop-in <code>serde_yaml</code> replacement backed by
-  noyalib — rename the package in Cargo.toml, change zero source
-  lines, keep the behaviour your code depends on.</strong>
+  Drop-in <code>serde_yaml</code> compatibility backed by the maintained noyalib engine.
 </p>
 
 <p align="center">
   <a href="https://github.com/sebastienrousseau/noyalib-serde-yaml/actions"><img src="https://img.shields.io/github/actions/workflow/status/sebastienrousseau/noyalib-serde-yaml/ci.yml?style=for-the-badge&logo=github" alt="Build" /></a>
-  <a href="https://crates.io/crates/noyalib-serde-yaml"><img src="https://img.shields.io/crates/v/noyalib-serde-yaml.svg?style=for-the-badge&color=fc8d62&logo=rust" alt="Crates.io" /></a>
-  <a href="https://docs.rs/noyalib-serde-yaml"><img src="https://img.shields.io/badge/docs.rs-noyalib--serde--yaml-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" alt="Docs.rs" /></a>
-  <a href="https://lib.rs/crates/noyalib-serde-yaml"><img src="https://img.shields.io/badge/lib.rs-noyalib-orange.svg?style=for-the-badge" alt="lib.rs" /></a>
+  <a href="https://crates.io/crates/noyalib-serde-yaml"><img src="https://img.shields.io/crates/v/noyalib-serde-yaml.svg?style=for-the-badge&color=fc8d62&logo=rust" alt="Registry" /></a>
+  <a href="https://docs.rs/noyalib-serde-yaml"><img src="https://img.shields.io/badge/docs.rs-noyalib--serde--yaml-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" alt="Docs" /></a>
   <a href="https://scorecard.dev/viewer/?uri=github.com/sebastienrousseau/noyalib-serde-yaml"><img src="https://img.shields.io/ossf-scorecard/github.com/sebastienrousseau/noyalib-serde-yaml?style=for-the-badge&label=OpenSSF%20Scorecard&logo=openssf" alt="OpenSSF Scorecard" /></a>
-  <a href="https://www.bestpractices.dev/projects/14497"><img src="https://img.shields.io/cii/level/14497?style=for-the-badge&label=OpenSSF%20Best%20Practices&logo=openssf" alt="OpenSSF Best Practices" /></a>
+  <a href="LICENSE-APACHE"><img src="https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg?style=for-the-badge" alt="License: Apache-2.0 OR MIT" /></a>
+  <a href="https://github.com/sebastienrousseau/noyalib-serde-yaml/blob/main/docs/POLICIES.md"><img src="https://img.shields.io/badge/MSRV-1.86.0-93450a.svg?style=for-the-badge&logo=rust" alt="MSRV 1.86.0" /></a>
 </p>
 
 ---
 
 ## Contents
 
-- [Install](#install) — the one-line migration
-- [Requirements](#requirements) — toolchain floor, platforms, the core pin
-- [Quick Start](#quick-start) — pre-migration code, unchanged
-- [Why this approach?](#why-this-approach) — design rationale
-- [Behavioural parity](#behavioural-parity) — what "drop-in" guarantees
-- [Examples](#examples) — runnable demonstrations
-- [Benchmarks](#benchmarks) — the cost of compatibility
-- [Repository layout](#repository-layout)
-- [Developing against an unpublished core](#developing-against-an-unpublished-core)
-- [When not to use noyalib-serde-yaml](#when-not-to-use-noyalib-serde-yaml)
-- [Documentation](#documentation)
+**Getting started**
+
+- [Install](#install) — one Cargo package rename
+- [Requirements](#requirements) — toolchain floor and lockstep core
+- [Quick Start](#quick-start) — existing serde_yaml code unchanged
+
+**The noyalib-serde-yaml ecosystem**
+
+- [The noyalib-serde-yaml ecosystem](#the-noyalib-serde-yaml-ecosystem) — compatibility and core relationships
+
+**Library reference**
+
+- [Capabilities at a glance](#capabilities-at-a-glance) — the current surface by theme
+- [Ecosystem comparison](#ecosystem-comparison) — short matrix; full table at [`docs/COMPARISON.md`](docs/COMPARISON.md)
+- [Benchmarks](#benchmarks) — shim overhead; full method at [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md)
+- [Features](#features) — compatibility surface
+- [Configuration](#configuration) — dependency and local-core setup
+- [Examples](#examples) — runnable parity demonstrations
+
+**Operational**
+
+- [When not to use noyalib-serde-yaml](#when-not-to-use-noyalib-serde-yaml) — limitations
+- [Development](#development) — make targets, contract tests, CI
+- [Security](#security) — guarantees and compliance
+- [Documentation](#documentation) — all reference docs
+- [Stability guarantees](#stability-guarantees) — compatibility, SemVer, and toolchain discipline
 - [License](#license)
 
 ---
 
 ## Install
 
+### As a Rust library
+
 ```toml
-# Cargo.toml — the whole migration:
-serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.45" }
+[dependencies]
+serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.46" }
 ```
 
-Every `use serde_yaml::…` in your codebase keeps compiling — Cargo's
-package rename substitutes this crate under the old name, so the
-diff is one manifest line.
-
-**MSRV: Rust 1.86.0** — matching the noyalib core floor. Releases
-ship in strict lockstep with the core at the identical `=0.0.X`
-(ADR-0005); the exact pin is the compatibility contract.
+Cargo exposes the dependency under the `serde_yaml` crate name, so existing
+`use serde_yaml::...` imports remain unchanged.
 
 ## Requirements
 
-- **Rust 1.86.0 or newer** to build from source: `rust-version` in
-  the manifest, enforced by the `msrv-core` CI job on every push.
-- **Any tier-1 platform.** CI runs the tests on Linux, macOS, and
-  Windows with the stable, beta, and nightly toolchains; stable is the
-  gate, beta and nightly are early warning.
-- **The matching core.** This crate pins `noyalib` at the identical
-  `=0.0.X` and releases in lockstep with it; Cargo resolves that pin
-  for you.
-- **`serde` 1**, as with `serde_yaml`; nothing else changes in your
-  manifest beyond the package rename.
+- Rust **1.86.0 or newer**.
+- The crate pins `noyalib` at exactly `=0.0.46` and releases in lockstep.
+- Existing code should target the documented `serde_yaml` 0.9 compatibility
+  contract rather than undocumented implementation details.
+
+| Surface | Minimum toolchain | Enforcement |
+| :--- | :---: | :--- |
+| Library | Rust 1.86.0 | manifest and MSRV CI |
+| Tests and benchmarks | Rust 1.86.0 | all-target CI |
 
 ## Quick Start
-
-This is `serde_yaml` 0.9 code, byte for byte — only the `Cargo.toml`
-line above has changed:
 
 ```rust
 use serde_yaml::{from_str, to_string};
 
 #[derive(serde::Serialize, serde::Deserialize)]
-struct Config { name: String, port: u16 }
+struct Config {
+    name: String,
+    port: u16,
+}
 
-let cfg: Config = from_str("name: gateway\nport: 8443\n")?;
-let out = to_string(&cfg)?;
-
-let err = from_str::<serde_yaml::Value>("a: [unclosed").unwrap_err();
-let loc = err.location().unwrap(); // 1-based line/column, 0-based index
+let config: Config = from_str("name: gateway\nport: 8443\n")?;
+let output = to_string(&config)?;
 ```
 
-## Why this approach?
+Only the dependency declaration changes during migration.
 
-`serde_yaml` 0.9 was archived in March 2024; advisories and spec
-corrections no longer flow into it. Every successor asks you to edit
-call sites — and then behaves differently anyway. This crate takes
-the opposite contract on both counts:
+## The noyalib-serde-yaml ecosystem
 
-- **Zero source changes.** The migration is a package rename in one
-  manifest line, reversible with the same line.
-- **Behaviour, pinned.** Since noyalib v0.0.29 the shim this crate
-  re-exports is *behavioural*: it parses under the core's
-  `serde_yaml_compat()` profile and renders errors upstream-style,
-  held by an 18-case contract suite whose expectations were captured
-  **live from `serde_yaml 0.9.34+deprecated`** — values, error
-  `Display` text, and `location()` pins.
-- **No dead branch.** The archived crate and its advisory chain are
-  never dependencies — every type is noyalib-native under the
-  `serde_yaml` names, pure Rust, `#![forbid(unsafe_code)]`.
+| Component | Purpose |
+| :--- | :--- |
+| `noyalib-serde-yaml` | Package-renamed compatibility facade |
+| [`noyalib`](https://github.com/sebastienrousseau/noyalib) | Maintained parser and serializer implementation |
+| `serde_yaml` 0.9 | Behavioural reference for the compatibility contract |
+| [`noya-cli`](https://github.com/sebastienrousseau/noya-cli) | Command-line migration and validation tools |
 
-## Behavioural parity
+## Capabilities at a glance
 
-| `serde_yaml` 0.9 behaviour | this crate |
-| :--- | :---: |
-| `<<:` stays a literal key (alias value resolved) | ✅ |
-| `0123` is a string, `0b11` is `3` | ✅ |
-| `1e999` stays the string `"1e999"` | ✅ |
-| `u64::MAX` keeps full precision; one past it errors `JSON number out of range` | ✅ |
-| `[a, b]: v` errors `invalid type: sequence, expected a string key` at `1:1:0` | ✅ |
-| alias bombs error `repetition limit exceeded` (jumps ≤ events × 100) | ✅ |
-| libyaml error phrasing and end-of-input location convention | ✅ pinned classes |
-| `Error::location()` → 1-based line/column, 0-based index | ✅ |
+| Area | Capability | Status |
+| :--- | :--- | :--- |
+| Migration | Package rename without source edits | Supported |
+| Serde | `from_*`, `to_*`, `Value`, `Mapping`, and error surface | Compatible |
+| Behaviour | 18-case captured parity contract | CI-gated |
+| Safety | Pure Rust with `unsafe` forbidden | Enforced |
+| Conformance | Shared YAML test-suite projection | CI-gated |
 
-One documented partial: a custom tag refused under `deserialize_any`
-anchors its location at the value where upstream anchors at the tag —
-message and refusal semantics are exact. Full provenance and
-enforcement: [`docs/CONTRACT.md`](docs/CONTRACT.md).
+## Ecosystem comparison
 
-## Examples
+| Option | Source changes | Maintained engine | Legacy quirks retained |
+| :--- | :---: | :---: | :---: |
+| **noyalib-serde-yaml** | No | Yes | Yes, by contract |
+| Direct `noyalib` | Yes | Yes | Opt-in profile only |
+| Archived `serde_yaml` | No | No | Yes |
 
-```bash
-cargo run --example drop_in             # the rename migration end to end
-cargo run --example behavioural_parity  # every headline quirk, live
-```
+See [`docs/COMPARISON.md`](docs/COMPARISON.md) for the migration trade-offs.
 
 ## Benchmarks
 
+The `shim_overhead` Criterion harness compares the compatibility profile with a
+direct noyalib path on the same documents.
+
 ```bash
-cargo bench   # shim path vs direct noyalib on the same documents
+cargo bench --bench shim_overhead
 ```
 
-The shim's profile deliberately bypasses noyalib's streaming fast
-path (merge keys must materialise), so the number worth watching is
-how small that gap is on your documents.
+See [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md) for methodology.
 
-## Repository layout
+## Features
 
-| Path | What lives there |
-| :--- | :--- |
-| `src/lib.rs` | The whole crate: a re-export of `noyalib::compat::serde_yaml` |
-| `tests/drop_in.rs` | Pre-migration `serde_yaml` code, compiled and run verbatim |
-| `examples/` | The migration and the parity quirks, runnable |
-| `benches/shim_overhead.rs` | Shim path vs direct noyalib |
-| `docs/MIGRATION.md` | The one-line migration, its guarantees, and its edges |
-| `docs/CONTRACT.md` | Where the 18-case behavioural contract comes from |
+- Package rename under the `serde_yaml` crate name.
+- Familiar value, mapping, serializer, deserializer, and error APIs.
+- Captured upstream error text and location behaviour for documented classes.
+- Merge-key and scalar-resolution compatibility profile.
+- No dependency on the archived `serde_yaml` implementation.
 
-## Developing against an unpublished core
+## Configuration
 
-Between lockstep releases the `=0.0.X` pin can point at a core
-version crates.io does not have yet. During that window a
-`[patch.crates-io]` section resolving it against the core's release
-branch is committed so CI and local builds work; **the patch is
-removed at release time** (the release validation refuses to tag
-while it is present). To develop against your local checkout
-instead:
+Production manifests must use the exact lockstep version shown above. To test
+against an unpublished local core without editing the manifest:
 
 ```bash
 cargo test --config 'patch.crates-io.noyalib.path="../noyalib/crates/noyalib"'
 ```
 
+Do not commit a path override to a release branch.
+
+## Examples
+
+- [`drop_in.rs`](examples/drop_in.rs): package-rename migration.
+- [`behavioural_parity.rs`](examples/behavioural_parity.rs): headline quirks.
+- [`docs/MIGRATION.md`](docs/MIGRATION.md): migration steps and rollback.
+- [`docs/CONTRACT.md`](docs/CONTRACT.md): evidence behind behavioural parity.
+
 ## When not to use noyalib-serde-yaml
 
-- **Greenfield code.** Depend on [`noyalib`](https://crates.io/crates/noyalib)
-  directly — YAML 1.2 strict resolution, byte-exact lossless editing
-  (`noyalib::cst`), source spans, streaming deserialisation, and
-  schema validation, without the legacy quirks this crate exists to
-  reproduce.
-- **You want the quirks gone.** The same engine minus the profile is
-  one `use noyalib::…` away; migrate gradually with the core's
-  [`compat-serde-yaml` feature](https://github.com/sebastienrousseau/noyalib/blob/main/docs/MIGRATION-FROM-SERDE-YAML.md).
+- Use `noyalib` directly for greenfield applications that do not require legacy
+  `serde_yaml` behaviour.
+- Do not choose this facade when the goal is to remove the legacy resolver and
+  error-shape quirks immediately.
+- Audit code that depends on undocumented `serde_yaml` internals before
+  migrating.
+
+The [detailed README reference](docs/README-REFERENCE.md) retains the parity
+table, repository layout, and conformance discussion.
+
+## Development
+
+```bash
+make
+make test
+make clippy
+make fmt
+cargo test --test behavioural_contract
+```
+
+CI runs the compatibility contract, drop-in tests, shared YAML suite, rustdoc,
+dependency policy, formatting, and linting. See [`DEVELOPMENT.md`](DEVELOPMENT.md).
+
+## Security
+
+Report vulnerabilities through [`SECURITY.md`](SECURITY.md). The crate forbids
+`unsafe` code and inherits noyalib's parser limits and dependency review. The
+archived `serde_yaml` crate is not present in the runtime dependency graph.
 
 ## Documentation
 
-The four entry points, identical across every repo in the family:
+- [User Manual](https://sebastienrousseau.github.io/noyalib-serde-yaml/manual/)
+- [API reference](https://docs.rs/noyalib-serde-yaml)
+- [Migration guide](docs/MIGRATION.md)
+- [Compatibility contract](docs/CONTRACT.md)
+- [Developer documentation](DEVELOPMENT.md)
+- [Engineering policies](docs/POLICIES.md)
+- [Compliance grade](docs/COMPLIANCE-GRADE.md)
+- [Detailed README reference](docs/README-REFERENCE.md)
 
-- **[User Manual](https://sebastienrousseau.github.io/noyalib-serde-yaml/manual/)** — this crate's rendered book: its guides, architecture, and release notes; the family manual for the core library is at [https://sebastienrousseau.github.io/noyalib/manual/](https://sebastienrousseau.github.io/noyalib/manual/)
-- **[API reference](https://docs.rs/noyalib-serde-yaml)** — rustdoc on docs.rs
-- **[Developer docs](DEVELOPMENT.md)** — this repo's dev entry point, pointing at the family guide
-- **[Ecosystem map](https://github.com/sebastienrousseau/noyalib/blob/main/docs/ECOSYSTEM.md)** — the six crates, the lockstep model, the scorecard
+## Stability guarantees
 
-- **Migration guide** — [`docs/MIGRATION.md`](docs/MIGRATION.md), and the
-  core repository's
-  [`MIGRATION-FROM-SERDE-YAML.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/MIGRATION-FROM-SERDE-YAML.md)
-  for the function-by-function mapping.
-- **Behavioural contract** — [`docs/CONTRACT.md`](docs/CONTRACT.md).
-- **API reference** — [docs.rs/noyalib-serde-yaml](https://docs.rs/noyalib-serde-yaml).
-- **Engineering policies** — the core repository's
-  [`POLICIES.md`](https://github.com/sebastienrousseau/noyalib/blob/main/docs/POLICIES.md).
-
-## Conformance
-
-Every push runs the official [yaml-test-suite](https://github.com/yaml/yaml-test-suite)
-through this shim's `from_str`, from the same vendored suite and the same core
-commit as the `noyalib` core: 367 of 367 cases inside the `serde_yaml`
-contract (24 multi-document cases and 15 non-scalar-key cases are refused the
-way the original refused them). A configuration that uses most of YAML at
-once (`tests/fixtures/ultra-complex/`) parses to exactly its expected JSON.
-Details and the family table:
-[noyalib.com/conformance](https://noyalib.com/conformance/).
+- During `0.0.x`, the patch component is the breaking-change axis.
+- The documented serde_yaml compatibility behaviour is a public contract.
+- The exact noyalib pin and satellite version move together.
+- The MSRV may rise only on the breaking axis with a changelog explanation.
 
 ## License
 
-Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE)
-or [MIT license](LICENSE-MIT) at your option.
+Licensed under either [Apache License 2.0](LICENSE-APACHE) or
+[MIT](LICENSE-MIT), at your option.
