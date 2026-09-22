@@ -4,8 +4,8 @@
 
 ## Version and dependency policy
 
-`noyalib-serde-yaml` releases in strict lockstep with `noyalib`. Version 0.0.49
-pins the core at exactly `=0.0.49`. Release work uses `feat/v0.0.49`; each
+`noyalib-serde-yaml` releases in strict lockstep with `noyalib`. Version 0.0.50
+pins the core at exactly `=0.0.50`. Release work uses `feat/v0.0.50`; each
 subsequent iteration increments exactly 0.0.1.
 
 ## Minimum Rust version
