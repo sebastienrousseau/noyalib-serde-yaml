@@ -12,6 +12,13 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
+## [v0.0.53] - 2026-10-06
+
+### Changed
+
+- Lockstep release with noyalib core 0.0.53: the exact core pin moves to
+  `=0.0.53`. No functional change in this crate beyond the version.
+
 ## [v0.0.52] - 2026-09-22
 
 ### Changed
