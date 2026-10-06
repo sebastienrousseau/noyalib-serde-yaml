@@ -12,6 +12,12 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
+## [v0.0.54] - Unreleased
+
+### Changed
+
+- Tracks `noyalib` 0.0.54 under the exact lockstep pin.
+
 ## [v0.0.53] - 2026-10-06
 
 ### Changed
