@@ -82,7 +82,7 @@ version = "0.0.51"
 audited_as = "0.0.50"
 
 [[unpublished.noyalib-serde-yaml]]
-version = "0.0.52"
+version = "0.0.53"
 audited_as = "0.0.51"
 
 [[publisher.bumpalo]]
