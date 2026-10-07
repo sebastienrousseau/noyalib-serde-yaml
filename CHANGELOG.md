@@ -12,11 +12,15 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
-## [v0.0.54] - Unreleased
+## [v0.0.54] - 2026-10-07
 
 ### Changed
 
 - Tracks `noyalib` 0.0.54 under the exact lockstep pin.
+- The release gate refuses a tag while `deny.toml` allows any git source,
+  next to its refusal of the pre-release `[patch]`, so cargo-deny can
+  allow the core's branch during the iteration without that allowance
+  reaching a release.
 
 ## [v0.0.53] - 2026-10-06
 
