@@ -17,6 +17,9 @@ notes.
 ### Changed
 
 - Tracks `noyalib` 0.0.55 under the exact lockstep pin.
+- The yaml-test-suite check counts duplicate-key refusals (case 2JQS)
+  as part of the serde_yaml 0.9 contract, which the core now keeps for
+  `Value` targets. Upstream serde_yaml 0.9.34 refuses the same case.
 
 ## [v0.0.54] - 2026-10-07
 
