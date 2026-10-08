@@ -17,6 +17,10 @@ notes.
 ### Changed
 
 - Tracks `noyalib` 0.0.56 under the exact lockstep pin.
+- **Breaking:** a struct target refuses a repeated field with serde_yaml
+  0.9's wording (``duplicate field `role` ``), through the core's shim.
+  It used to keep the last entry. Map targets still keep the last entry
+  and `Value` targets still refuse every duplicate, both as upstream.
 
 ## [v0.0.55] - 2026-10-08
 
