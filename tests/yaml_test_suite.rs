@@ -183,14 +183,16 @@ fn from_str_agrees_with_the_suite_on_every_single_document_case() {
             },
             Err(_) if case.fail => passed += 1,
             // The shim keeps serde_yaml 0.9's contract: one document per
-            // `from_str`, and only scalar mapping keys.
+            // `from_str`, only scalar mapping keys, and no duplicate keys
+            // (upstream refuses 2JQS's two empty keys too).
             Err(e) if is_multi || e.to_string().contains("more than one document") => multi += 1,
             Err(e) if e.to_string().contains("expected a string key") => refused += 1,
+            Err(e) if e.to_string().contains("duplicate entry") => refused += 1,
             Err(e) => failures.push(format!("{}: {e}", case.id)),
         }
     }
     eprintln!(
-        "yaml-test-suite (serde_yaml shim): {passed} passed, {} failed, {multi} multi-document, {refused} non-scalar-key refusals",
+        "yaml-test-suite (serde_yaml shim): {passed} passed, {} failed, {multi} multi-document, {refused} contract refusals",
         failures.len()
     );
     assert!(failures.is_empty(), "{failures:#?}");
