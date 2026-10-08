@@ -12,7 +12,7 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
-## [v0.0.56] - Unreleased
+## [v0.0.56] - 2026-10-08
 
 ### Changed
 
