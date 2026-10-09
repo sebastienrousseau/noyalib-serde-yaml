@@ -7,7 +7,7 @@
 //!
 //! ```toml
 //! # Cargo.toml — the whole migration:
-//! serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.56" }
+//! serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.57" }
 //! ```
 //!
 //! Every `use serde_yaml::…` in the codebase keeps compiling
