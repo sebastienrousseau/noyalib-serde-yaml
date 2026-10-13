@@ -5,7 +5,7 @@
 name = "noyalib-serde-yaml"
 version = "0.0.57"
 edition = "2024"
-rust-version = "1.86.0"
+rust-version = "1.89.0"
 license = "MIT OR Apache-2.0"
 description = "Drop-in serde_yaml replacement backed by noyalib — rename the package in Cargo.toml, change zero source lines"
 repository = "https://github.com/sebastienrousseau/noyalib-serde-yaml"

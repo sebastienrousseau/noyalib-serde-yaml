@@ -51,13 +51,14 @@ Every `use serde_yaml::…` in your codebase keeps compiling — Cargo's
 package rename substitutes this crate under the old name, so the
 diff is one manifest line.
 
-**MSRV: Rust 1.86.0** — matching the noyalib core floor. Releases
+**MSRV: Rust 1.89.0**, the floor shared across the noyalib family and the
+maintainer's other Rust crates (noyalib ADR-0014). Releases
 ship in strict lockstep with the core at the identical `=0.0.X`
 (ADR-0005); the exact pin is the compatibility contract.
 
 ## Requirements
 
-- **Rust 1.86.0 or newer** to build from source: `rust-version` in
+- **Rust 1.89.0 or newer** to build from source: `rust-version` in
   the manifest, enforced by the `msrv-core` CI job on every push.
 - **Any tier-1 platform.** CI runs the tests on Linux, macOS, and
   Windows with the stable, beta, and nightly toolchains; stable is the

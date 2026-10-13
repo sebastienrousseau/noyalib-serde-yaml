@@ -16,7 +16,7 @@
   <a href="https://docs.rs/noyalib-serde-yaml"><img src="https://img.shields.io/badge/docs.rs-noyalib--serde--yaml-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" alt="Docs" /></a>
   <a href="https://scorecard.dev/viewer/?uri=github.com/sebastienrousseau/noyalib-serde-yaml"><img src="https://img.shields.io/ossf-scorecard/github.com/sebastienrousseau/noyalib-serde-yaml?style=for-the-badge&label=OpenSSF%20Scorecard&logo=openssf" alt="OpenSSF Scorecard" /></a>
   <a href="LICENSE-APACHE"><img src="https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg?style=for-the-badge" alt="License: Apache-2.0 OR MIT" /></a>
-  <a href="https://github.com/sebastienrousseau/noyalib-serde-yaml/blob/main/docs/POLICIES.md"><img src="https://img.shields.io/badge/MSRV-1.86.0-93450a.svg?style=for-the-badge&logo=rust" alt="MSRV 1.86.0" /></a>
+  <a href="https://github.com/sebastienrousseau/noyalib-serde-yaml/blob/main/docs/POLICIES.md"><img src="https://img.shields.io/badge/MSRV-1.89.0-93450a.svg?style=for-the-badge&logo=rust" alt="MSRV 1.89.0" /></a>
 </p>
 
 ---
@@ -67,15 +67,15 @@ Cargo exposes the dependency under the `serde_yaml` crate name, so existing
 
 ## Requirements
 
-- Rust **1.86.0 or newer**.
+- Rust **1.89.0 or newer**.
 - The crate pins `noyalib` at exactly `=0.0.57` and releases in lockstep.
 - Existing code should target the documented `serde_yaml` 0.9 compatibility
   contract rather than undocumented implementation details.
 
 | Surface | Minimum toolchain | Enforcement |
 | :--- | :---: | :--- |
-| Library | Rust 1.86.0 | manifest and MSRV CI |
-| Tests and benchmarks | Rust 1.86.0 | all-target CI |
+| Library | Rust 1.89.0 | manifest and MSRV CI |
+| Tests and benchmarks | Rust 1.89.0 | all-target CI |
 
 ## Quick Start
 
