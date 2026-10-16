@@ -12,6 +12,36 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
+## [v0.0.58] - 2026-10-16
+
+### Changed
+
+- Tracks `noyalib` 0.0.58 under the exact lockstep pin, so the core's
+  0.0.58 fixes reach this crate unchanged; the core's CHANGELOG lists
+  them. One shows in this crate's API: an unknown or missing field that
+  `serde_yaml::from_str` rejects now carries its field path and
+  location, as a type mismatch already did: `server.porrt: unknown
+  field: porrt at line 3 column 10`, where 0.0.57 said `unknown field:
+  porrt`. Code that matches the error text sees the longer message.
+  `from_value` has no source to locate against and still returns the
+  bare error.
+
+### Changed: MSRV 1.86 to 1.89
+
+- **The minimum supported Rust version is now 1.89.0** (was 1.86.0),
+  in lockstep with noyalib v0.0.58. The raise has no toolchain reason;
+  it puts the family on one floor with the maintainer's other Rust
+  crates (noyalib ADR-0014). If you are pinned below 1.89, stay on
+  v0.0.57.
+- **`scripts/verify-release-versions.sh` checks the MSRV.** Every
+  statement of the floor (README, policies, rustdoc, CI) must match
+  `rust-version`; each failed against the old statements.
+
+### Dependencies
+
+- `dtolnay/rust-toolchain` moves to `e2a55d2` in CI, from Dependabot
+  #36.
+
 ## [v0.0.57] - 2026-10-09
 
 ### Changed
