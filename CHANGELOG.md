@@ -12,6 +12,17 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
+## [v0.0.61] - Unreleased
+
+### Changed
+
+- Prepare the next lockstep version for the ecosystem assurance work.
+  Release dates and completed changes are recorded after verification.
+
+- Document the facade's std requirement separately from core alloc-only
+  compatibility. Preserve the renamed Cargo consumer contract.
+- Audit nested locks and retain bounded fuzz campaign evidence.
+
 ## [v0.0.60] - 2026-11-10
 
 ### Changed

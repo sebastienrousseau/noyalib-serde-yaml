@@ -7,7 +7,7 @@
 //!
 //! ```toml
 //! # Cargo.toml — the whole migration:
-//! serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.60" }
+//! serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.61" }
 //! ```
 //!
 //! Every `use serde_yaml::…` in the codebase keeps compiling
@@ -22,7 +22,7 @@
 //! parse errors carry libyaml's phrasing and end-of-input location
 //! convention. The 18-case contract suite pinning all of this —
 //! with expectations captured live from `serde_yaml 0.9.34` — ships
-//! in the core repository (`tests/serde_yaml_contract.rs`).
+//! in the core repository (`tests/integrations/serde_yaml_contract.rs`).
 //!
 //! Unlike the archived `serde_yaml` 0.9 this surface is maintained,
 //! pure-Rust with `#![forbid(unsafe_code)]`, and never re-introduces
