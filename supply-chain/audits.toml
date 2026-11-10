@@ -144,6 +144,12 @@ criteria = "safe-to-deploy"
 delta = "0.0.49 -> 0.0.50"
 notes = "Reviewed backpressured async streams and per-document frame limits; Tokio tests, clippy, and strict docs passed."
 
+[[audits.noyalib]]
+who = "OpenAI Codex"
+criteria = "safe-to-deploy"
+delta = "0.0.58 -> 0.0.59"
+notes = "Reviewed published archive SHA-256 8d99aeedb93b24d2416edd7de7946ddedce9942af917cbc78b0d9a9ecca83bad and full 0.0.58 source delta: bounded portable float helpers, budgeted source retention and validated atomic CST edits. Unsafe code remains forbidden; no new ambient capabilities. See supply-chain/reviews/v0.0.59.md for provenance and validation boundaries."
+
 [[audits.noyalib-serde-yaml]]
 who = "OpenAI Codex"
 criteria = "safe-to-deploy"
@@ -155,6 +161,12 @@ who = "OpenAI Codex"
 criteria = "safe-to-deploy"
 delta = "0.0.49 -> 0.0.50"
 notes = "Reviewed lockstep release metadata; source and behaviour are unchanged."
+
+[[audits.noyalib-serde-yaml]]
+who = "OpenAI Codex"
+criteria = "safe-to-deploy"
+delta = "0.0.58 -> 0.0.59"
+notes = "Compared published 0.0.58 archive with this release: runtime Rust unchanged; serde-yaml changes only its crate-level version example. Release metadata, exact core pin and independently reviewed dependencies change. See supply-chain/reviews/v0.0.59.md."
 
 [[audits.num]]
 who = "Sebastien Rousseau <sebastian.rousseau@gmail.com>"
@@ -358,6 +370,6 @@ delta = "1.0.20 -> 1.0.23"
 
 [[trusted.libm]]
 criteria = "safe-to-deploy"
-user-id = 55123 # rust-lang-owner
+user-id = 55123
 start = "2024-10-26"
 end = "2027-05-09"

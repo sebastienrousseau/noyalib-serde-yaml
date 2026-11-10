@@ -12,6 +12,19 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
+## [v0.0.59] - 2026-11-10
+
+### Changed
+
+- Tracks `noyalib` 0.0.59 under the exact lockstep pin, so the core's
+  0.0.59 fixes reach this crate unchanged; the core's CHANGELOG lists
+  them.
+
+### Dependencies
+
+- `serde_json` 1.0.154, from Dependabot #38, and the GitHub Actions
+  pins in CI, from Dependabot #40, each with its `cargo vet` record.
+
 ## [v0.0.58] - 2026-10-16
 
 ### Changed

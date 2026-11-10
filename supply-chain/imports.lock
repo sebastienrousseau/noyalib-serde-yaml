@@ -112,12 +112,6 @@ user-id = 696
 user-login = "fitzgen"
 user-name = "Nick Fitzgerald"
 
-[[publisher.libm]]
-version = "0.2.16"
-when = "2026-01-24"
-user-id = 55123
-user-login = "rust-lang-owner"
-
 [[audits.bytecode-alliance.wildcard-audits.bumpalo]]
 who = "Nick Fitzgerald <fitzgen@gmail.com>"
 criteria = "safe-to-deploy"
