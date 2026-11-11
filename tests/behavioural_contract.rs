@@ -305,3 +305,10 @@ fn binary_looking_string_keys_roundtrip() {
     let emitted = syml::to_string(&value).unwrap();
     assert_eq!(syml::from_str::<syml::Value>(&emitted).unwrap(), value);
 }
+
+#[test]
+fn unsigned_hex_string_keys_roundtrip() {
+    let value: syml::Value = syml::from_str("!88888 0xBBB9BBBBBBB73788:").unwrap();
+    let emitted = syml::to_string(&value).unwrap();
+    assert_eq!(syml::from_str::<syml::Value>(&emitted).unwrap(), value);
+}

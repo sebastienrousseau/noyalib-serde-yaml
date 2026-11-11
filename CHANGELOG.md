@@ -16,6 +16,8 @@ notes.
 
 ### Changed
 
+- Preserve unsigned radix string keys during serialization. Escalate CST
+  root shape changes to a full parse to preserve UTF-8 token boundaries.
 - Separate equivalent compatibility entry-point benchmarks from resolver
   profile comparisons.
 - Add the standalone captured-contract target and extended Value, tag,
