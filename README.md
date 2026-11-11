@@ -132,8 +132,8 @@ See [`docs/COMPARISON.md`](docs/COMPARISON.md) for the migration trade-offs.
 
 ## Benchmarks
 
-The `shim_overhead` Criterion harness compares the compatibility profile with a
-direct noyalib path on the same documents.
+The `shim_overhead` Criterion harness compares equivalent facade and core
+compatibility entry points. A separate group compares resolver profiles.
 
 ```bash
 cargo bench --bench shim_overhead

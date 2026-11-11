@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 // Copyright (c) 2026 Noyalib. All rights reserved.
 
-//! The cost of behavioural compatibility: the shim path (serde_yaml
-//! profile) against noyalib's direct path on the same documents.
-//! The shim's config disqualifies the streaming fast path by design
-//! (merge keys must materialise), so the interesting number is how
-//! small that gap is — run `cargo bench` and see.
+//! Compare facade and core entry points with identical compatibility semantics.
+//! Keep native-versus-compatibility profile costs in a separate group.
 
 use criterion::{Criterion, criterion_group, criterion_main};
 use std::hint::black_box;
@@ -26,24 +23,37 @@ fn medium() -> String {
 
 fn bench(c: &mut Criterion) {
     let med = medium();
-    let mut g = c.benchmark_group("from_str_value");
-    let _ = g.bench_function("shim/small", |b| {
-        b.iter(|| {
-            noyalib_serde_yaml::from_str::<noyalib_serde_yaml::Value>(black_box(SMALL)).unwrap()
+    let inputs = [("small", SMALL), ("medium", med.as_str())];
+    let mut equivalent = c.benchmark_group("equivalent_compatibility");
+    for (name, input) in inputs {
+        let facade: noyalib_serde_yaml::Value = noyalib_serde_yaml::from_str(input).unwrap();
+        let core: noyalib::Value = noyalib::compat::serde_yaml::from_str(input).unwrap();
+        assert_eq!(facade, core);
+        let _ = equivalent.bench_function(format!("facade/{name}"), |b| {
+            b.iter(|| {
+                noyalib_serde_yaml::from_str::<noyalib_serde_yaml::Value>(black_box(input)).unwrap()
+            });
         });
-    });
-    let _ = g.bench_function("direct/small", |b| {
-        b.iter(|| noyalib::from_str::<noyalib::Value>(black_box(SMALL)).unwrap());
-    });
-    let _ = g.bench_function("shim/medium", |b| {
-        b.iter(|| {
-            noyalib_serde_yaml::from_str::<noyalib_serde_yaml::Value>(black_box(&med)).unwrap()
+        let _ = equivalent.bench_function(format!("core/{name}"), |b| {
+            b.iter(|| {
+                noyalib::compat::serde_yaml::from_str::<noyalib::Value>(black_box(input)).unwrap()
+            });
         });
-    });
-    let _ = g.bench_function("direct/medium", |b| {
-        b.iter(|| noyalib::from_str::<noyalib::Value>(black_box(&med)).unwrap());
-    });
-    g.finish();
+    }
+    equivalent.finish();
+
+    let mut profiles = c.benchmark_group("resolver_profiles");
+    for (name, input) in inputs {
+        let _ = profiles.bench_function(format!("compatibility/{name}"), |b| {
+            b.iter(|| {
+                noyalib_serde_yaml::from_str::<noyalib_serde_yaml::Value>(black_box(input)).unwrap()
+            });
+        });
+        let _ = profiles.bench_function(format!("native/{name}"), |b| {
+            b.iter(|| noyalib::from_str::<noyalib::Value>(black_box(input)).unwrap());
+        });
+    }
+    profiles.finish();
 }
 
 criterion_group!(benches, bench);

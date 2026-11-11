@@ -16,6 +16,8 @@ notes.
 
 ### Changed
 
+- Separate equivalent compatibility entry-point benchmarks from resolver
+  profile comparisons.
 - Add the standalone captured-contract target and extended Value, tag,
   number and location cases. Document compatibility boundaries explicitly.
 - Core parsing now preserves anchor declaration order and clips only a
