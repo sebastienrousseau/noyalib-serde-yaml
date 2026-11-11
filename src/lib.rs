@@ -1,28 +1,19 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 // Copyright (c) 2026 Noyalib. All rights reserved.
 
-//! Drop-in `serde_yaml` replacement backed by
-//! [noyalib](https://docs.rs/noyalib) — **rename the package in
-//! `Cargo.toml`, change zero source lines**.
+//! `serde_yaml` migration facade backed by
+//! [noyalib](https://docs.rs/noyalib). Supported Serde entry points can
+//! retain their import name through a Cargo package rename.
 //!
 //! ```toml
-//! # Cargo.toml — the whole migration:
 //! serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.61" }
 //! ```
 //!
-//! Every `use serde_yaml::…` in the codebase keeps compiling
-//! unchanged, and — since noyalib v0.0.29 made the shim
-//! *behavioural* — keeps behaving like `serde_yaml` 0.9 where it
-//! matters: `<<` merge keys stay literal entries, `0123` stays a
-//! string and `0b11` is 3, a literal `1e999` stays a string,
-//! `u64::MAX` keeps full precision and one past it refuses as
-//! `JSON number out of range`, non-scalar keys refuse as
-//! `invalid type: sequence, expected a string key`, alias expansion
-//! is budgeted with upstream's `repetition limit exceeded`, and
-//! parse errors carry libyaml's phrasing and end-of-input location
-//! convention. The 18-case contract suite pinning all of this —
-//! with expectations captured live from `serde_yaml 0.9.34` — ships
-//! in the core repository (`tests/integrations/serde_yaml_contract.rs`).
+//! The captured contract covers JSON-target scalar resolution, merge
+//! keys, errors and locations. It does not promise every archived
+//! `serde_yaml` API or every diagnostic. `Value` and `Mapping` use
+//! noyalib's model, including string mapping keys. Check the repository's
+//! `docs/CONTRACT.md` before migrating code that depends on these types.
 //!
 //! Unlike the archived `serde_yaml` 0.9 this surface is maintained,
 //! pure-Rust with `#![forbid(unsafe_code)]`, and never re-introduces

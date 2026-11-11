@@ -4,7 +4,7 @@
 
 | Option | Source changes | Maintained engine | Legacy behaviour retained |
 | :--- | :---: | :---: | :---: |
-| `noyalib-serde-yaml` | No | Yes | Yes, by documented contract |
+| `noyalib-serde-yaml` | Depends on APIs used | Yes | Yes, by documented contract |
 | Direct `noyalib` | Yes | Yes | Opt-in compatibility profile |
 | Archived `serde_yaml` | No | No | Yes |
 

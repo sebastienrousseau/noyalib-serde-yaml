@@ -7,9 +7,8 @@
 <h1 align="center">noyalib-serde-yaml</h1>
 
 <p align="center">
-  <strong>Drop-in <code>serde_yaml</code> replacement backed by
-  noyalib — rename the package in Cargo.toml, change zero source
-  lines, keep the behaviour your code depends on.</strong>
+  <strong><code>serde_yaml</code> migration facade backed by
+  noyalib, with a captured compatibility contract.</strong>
 </p>
 
 <p align="center">
@@ -47,9 +46,9 @@
 serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.61" }
 ```
 
-Every `use serde_yaml::…` in your codebase keeps compiling — Cargo's
-package rename substitutes this crate under the old name, so the
-diff is one manifest line.
+Cargo exposes the facade under the `serde_yaml` import name. Check the
+[compatibility scope](CONTRACT.md) before migrating APIs beyond the tested
+Serde entry points.
 
 **MSRV: Rust 1.89.0**, the floor shared across the noyalib family and the
 maintainer's other Rust crates (noyalib ADR-0014). Releases
@@ -119,10 +118,10 @@ the opposite contract on both counts:
 | libyaml error phrasing and end-of-input location convention | ✅ pinned classes |
 | `Error::location()` → 1-based line/column, 0-based index | ✅ |
 
-One documented partial: a custom tag refused under `deserialize_any`
-anchors its location at the value where upstream anchors at the tag —
-message and refusal semantics are exact. Full provenance and
-enforcement: [`docs/CONTRACT.md`](CONTRACT.md).
+Custom-tag refusal locations are pinned at the tag. The table describes
+the captured JSON-target cases. `Value` and `Mapping` use noyalib's model,
+including string mapping keys; overflow wording can depend on the target
+type. See [the contract](CONTRACT.md) for scope and enforcement.
 
 ## Examples
 
