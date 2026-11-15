@@ -12,6 +12,19 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
+## [v0.0.62] - Unreleased
+
+### Changed
+
+- **Breaking:** error paths that open with a root sequence index now
+  read as serde_yaml 0.9 prints them, `.[1]: invalid type` and
+  `.[1][0]: JSON number out of range`, instead of `[1]` and `1.0`.
+- A byte order mark inside plain or block scalars and comments reads as
+  text, as serde_yaml 0.9 does, including one that opens a scalar after
+  other text on its line (`a: \u{feff}b`), which was refused. Anchor
+  names and tags refuse it, also as upstream does.
+- The exact core pin advances to `=0.0.62`.
+
 ## [v0.0.61] - Unreleased
 
 ### Changed

@@ -43,7 +43,7 @@
 
 ```toml
 # Cargo.toml — the whole migration:
-serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.61" }
+serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.62" }
 ```
 
 Cargo exposes the facade under the `serde_yaml` import name. Check the
