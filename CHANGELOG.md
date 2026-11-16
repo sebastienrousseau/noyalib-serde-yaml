@@ -12,7 +12,7 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
-## [v0.0.62] - Unreleased
+## [v0.0.62] - 2026-11-16
 
 v0.0.61 was never published: on 2026-11-15 the maintainer folded it into
 this release, in lockstep with the core, so the registry goes from
@@ -28,6 +28,14 @@ v0.0.60 to v0.0.62. Every v0.0.61 change below ships here.
   other text on its line (`a: \u{feff}b`), which was refused. Anchor
   names and tags refuse it, also as upstream does.
 - The exact core pin advances to `=0.0.62`.
+- **Breaking:** a `%TAG` handle or prefix holding a byte order mark is
+  refused, as libyaml refuses it. It was read as text, and a tag built
+  from that prefix was then written in a form the reader refused (found
+  by `fuzz_roundtrip`).
+
+### Dependencies
+
+- GitHub Actions: the github-actions group's four pin updates (#45).
 
 ## [v0.0.61] - Not published
 
