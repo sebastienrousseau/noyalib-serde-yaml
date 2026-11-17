@@ -12,6 +12,56 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
+## [v0.0.62] - 2026-11-17
+
+v0.0.61 was never published: on 2026-11-15 the maintainer folded it into
+this release, in lockstep with the core, so the registry goes from
+v0.0.60 to v0.0.62. Every v0.0.61 change below ships here.
+
+### Changed
+
+- **Breaking:** error paths that open with a root sequence index now
+  read as serde_yaml 0.9 prints them, `.[1]: invalid type` and
+  `.[1][0]: JSON number out of range`, instead of `[1]` and `1.0`.
+- A byte order mark inside plain or block scalars and comments reads as
+  text, as serde_yaml 0.9 does, including one that opens a scalar after
+  other text on its line (`a: \u{feff}b`), which was refused. Anchor
+  names and tags refuse it, also as upstream does.
+- The exact core pin advances to `=0.0.62`.
+- **Breaking:** a `%TAG` handle or prefix holding a byte order mark is
+  refused, as libyaml refuses it. It was read as text, and a tag built
+  from that prefix was then written in a form the reader refused (found
+  by `fuzz_roundtrip`).
+
+### Dependencies
+
+- GitHub Actions: the github-actions group's four pin updates (#45).
+
+## [v0.0.61] - Not published
+
+Folded into v0.0.62 (2026-11-15); there is no v0.0.61 tag or registry
+release.
+
+### Changed
+
+- Preserve unsigned radix string keys during serialization. Escalate CST
+  root shape changes to a full parse to preserve UTF-8 token boundaries.
+- Separate equivalent compatibility entry-point benchmarks from resolver
+  profile comparisons.
+- Add the standalone captured-contract target and extended Value, tag,
+  number and location cases. Document compatibility boundaries explicitly.
+- Core parsing now preserves anchor declaration order and clips only a
+  final line break present in the input. These are breaking parse behavior
+  corrections under the family's patch-version policy.
+- Release dry runs guard signing and GitHub release creation. Version
+  checks include every tracked Cargo lock.
+- Prepare the next lockstep version for the ecosystem assurance work.
+  Release dates and completed changes are recorded after verification.
+
+- Document the facade's std requirement separately from core alloc-only
+  compatibility. Preserve the renamed Cargo consumer contract.
+- Audit nested locks and retain bounded fuzz campaign evidence.
+
 ## [v0.0.60] - 2026-11-10
 
 ### Changed

@@ -7,7 +7,7 @@
 <h1 align="center">noyalib-serde-yaml</h1>
 
 <p align="center">
-  Drop-in <code>serde_yaml</code> compatibility backed by the maintained noyalib engine.
+  <code>serde_yaml</code> migration compatibility backed by the maintained noyalib engine.
 </p>
 
 <p align="center">
@@ -53,13 +53,19 @@
 
 ---
 
+## Development version
+
+This branch prepares unreleased v0.0.62. Versioned Cargo examples describe
+that upcoming release; use a published version for registry installation
+until it ships. Local verification uses the sibling core source explicitly.
+
 ## Install
 
 ### As a Rust library
 
 ```toml
 [dependencies]
-serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.60" }
+serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.62" }
 ```
 
 Cargo exposes the dependency under the `serde_yaml` crate name, so existing
@@ -68,7 +74,7 @@ Cargo exposes the dependency under the `serde_yaml` crate name, so existing
 ## Requirements
 
 - Rust **1.89.0 or newer**.
-- The crate pins `noyalib` at exactly `=0.0.60` and releases in lockstep.
+- The crate pins `noyalib` at exactly `=0.0.62` and releases in lockstep.
 - Existing code should target the documented `serde_yaml` 0.9 compatibility
   contract rather than undocumented implementation details.
 
@@ -92,7 +98,8 @@ let config: Config = from_str("name: gateway\nport: 8443\n")?;
 let output = to_string(&config)?;
 ```
 
-Only the dependency declaration changes during migration.
+The example above needs only a dependency rename. Check the
+[compatibility scope](docs/CONTRACT.md) before migrating other APIs.
 
 ## The noyalib-serde-yaml ecosystem
 
@@ -107,9 +114,9 @@ Only the dependency declaration changes during migration.
 
 | Area | Capability | Status |
 | :--- | :--- | :--- |
-| Migration | Package rename without source edits | Supported |
-| Serde | `from_*`, `to_*`, `Value`, `Mapping`, and error surface | Compatible |
-| Behaviour | 18-case captured parity contract | CI-gated |
+| Migration | Package rename for supported Serde entry points | Supported |
+| Serde | `from_*`, `to_*`, and captured error classes | Contract-tested |
+| Behaviour | 18-case captured parity contract and extended shape tests | Tested locally; CI runs the target |
 | Safety | Pure Rust with `unsafe` forbidden | Enforced |
 | Conformance | Shared YAML test-suite projection | CI-gated |
 
@@ -117,7 +124,7 @@ Only the dependency declaration changes during migration.
 
 | Option | Source changes | Maintained engine | Legacy quirks retained |
 | :--- | :---: | :---: | :---: |
-| **noyalib-serde-yaml** | No | Yes | Yes, by contract |
+| **noyalib-serde-yaml** | Depends on APIs used | Yes | Yes, by contract |
 | Direct `noyalib` | Yes | Yes | Opt-in profile only |
 | Archived `serde_yaml` | No | No | Yes |
 
@@ -125,8 +132,8 @@ See [`docs/COMPARISON.md`](docs/COMPARISON.md) for the migration trade-offs.
 
 ## Benchmarks
 
-The `shim_overhead` Criterion harness compares the compatibility profile with a
-direct noyalib path on the same documents.
+The `shim_overhead` Criterion harness compares equivalent facade and core
+compatibility entry points. A separate group compares resolver profiles.
 
 ```bash
 cargo bench --bench shim_overhead
