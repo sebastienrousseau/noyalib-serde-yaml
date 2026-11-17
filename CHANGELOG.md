@@ -12,7 +12,7 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
-## [v0.0.62] - 2026-11-16
+## [v0.0.62] - 2026-11-17
 
 v0.0.61 was never published: on 2026-11-15 the maintainer folded it into
 this release, in lockstep with the core, so the registry goes from
