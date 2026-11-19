@@ -12,7 +12,7 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
-## [v0.0.63] - Unreleased
+## [v0.0.63] - 2026-11-19
 
 ### Changed
 
@@ -25,7 +25,10 @@ notes.
 
 ### Dependencies
 
-- GitHub Actions: the github-actions group's 17 pin updates (#47).
+- GitHub Actions: the github-actions group's 17 pin updates (#47);
+  the shared core workflows run from the v0.0.62 release commit.
+- cargo-vet records the core 0.0.62 -> 0.0.63 delta
+  (`supply-chain/reviews/v0.0.63.md`).
 
 ## [v0.0.62] - 2026-11-17
 
