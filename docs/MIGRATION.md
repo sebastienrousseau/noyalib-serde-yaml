@@ -6,7 +6,7 @@
 Rename the dependency for code using the supported Serde entry points:
 
 ```toml
-serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.62" }
+serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.63" }
 ```
 
 This branch prepares an unpublished version. Use a published matching

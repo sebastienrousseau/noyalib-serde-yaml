@@ -6,7 +6,7 @@
 //! retain their import name through a Cargo package rename.
 //!
 //! ```toml
-//! serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.62" }
+//! serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.63" }
 //! ```
 //!
 //! The captured contract covers JSON-target scalar resolution, merge
