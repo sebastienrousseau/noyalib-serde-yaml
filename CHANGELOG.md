@@ -12,6 +12,24 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
+## [v0.0.63] - 2026-11-20
+
+### Changed
+
+- The exact core pin advances to `=0.0.63`. Nothing this crate exports
+  changes: the core's one fix in this release, where
+  `cst::Document::insert_entry_value` double-quotes a multi-line string
+  holding a C1 control instead of writing a `|` block the v0.0.62 parser
+  refuses (noyalib#533), is in the CST editing API, which this crate
+  does not re-export.
+
+### Dependencies
+
+- GitHub Actions: the github-actions group's 17 pin updates (#47);
+  the shared core workflows run from the v0.0.62 release commit.
+- cargo-vet records the core 0.0.62 -> 0.0.63 delta
+  (`supply-chain/reviews/v0.0.63.md`).
+
 ## [v0.0.62] - 2026-11-17
 
 v0.0.61 was never published: on 2026-11-15 the maintainer folded it into
