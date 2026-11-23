@@ -55,7 +55,7 @@
 
 ## Development version
 
-This branch prepares unreleased v0.0.63. Versioned Cargo examples describe
+This branch prepares unreleased v0.0.64. Versioned Cargo examples describe
 that upcoming release; use a published version for registry installation
 until it ships. Local verification uses the sibling core source explicitly.
 
@@ -65,7 +65,7 @@ until it ships. Local verification uses the sibling core source explicitly.
 
 ```toml
 [dependencies]
-serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.63" }
+serde_yaml = { package = "noyalib-serde-yaml", version = "=0.0.64" }
 ```
 
 Cargo exposes the dependency under the `serde_yaml` crate name, so existing
@@ -74,7 +74,7 @@ Cargo exposes the dependency under the `serde_yaml` crate name, so existing
 ## Requirements
 
 - Rust **1.89.0 or newer**.
-- The crate pins `noyalib` at exactly `=0.0.63` and releases in lockstep.
+- The crate pins `noyalib` at exactly `=0.0.64` and releases in lockstep.
 - Existing code should target the documented `serde_yaml` 0.9 compatibility
   contract rather than undocumented implementation details.
 
