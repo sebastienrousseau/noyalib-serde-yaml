@@ -105,12 +105,21 @@ audited_as = "0.0.56"
 version = "0.0.58"
 audited_as = "0.0.57"
 
+[[unpublished.noyalib-serde-yaml]]
+version = "0.0.64"
+audited_as = "0.0.63"
+
 [[publisher.bumpalo]]
 version = "3.20.3"
 when = "2026-05-22"
 user-id = 696
 user-login = "fitzgen"
 user-name = "Nick Fitzgerald"
+
+[[publisher.noyalib]]
+version = "0.0.64"
+when = "2026-11-23"
+trusted-publisher = "github:sebastienrousseau/noyalib"
 
 [[audits.bytecode-alliance.wildcard-audits.bumpalo]]
 who = "Nick Fitzgerald <fitzgen@gmail.com>"

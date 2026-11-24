@@ -12,6 +12,19 @@ and versions in strict lockstep with the
 (ADR-0005) — see that repository's `CHANGELOG.md` for release-wide
 notes.
 
+## [v0.0.64] - 2026-11-24
+
+### Changed
+
+- The exact core pin advances to `=0.0.64`. Nothing this crate exports
+  changes: the core's change in this release is a faster path in the
+  scanner for printable-ASCII plain and block scalars, which accepts and
+  refuses exactly what v0.0.63 did.
+
+### Dependencies
+
+- GitHub Actions: `taiki-e/install-action` 2.90.5 (#49).
+
 ## [v0.0.63] - 2026-11-20
 
 ### Changed
